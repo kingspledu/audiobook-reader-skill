@@ -31,3 +31,16 @@ description: 원문에서 Gemini Canvas용 드라마 TTS HTML을 제작하고 �
 읽기 파이프라인은 영어 토큰과 1~29장·3권을 기준으로 한다. 다른 언어·권수는 문서의 고정값을 모두 수정하고 시험한다. TTS 생성기가 한국어를 지원해도 읽기 도구의 한국어 정렬까지 검증된 것은 아니다. `--real-speech` 스모크는 과거 책의 로컬 fixture를 요구하므로 공개 기본 시험에는 사용하지 않는다.
 
 `python scripts/validate_package.py`로 포함 파일과 해시를 검사한다. 작업공간에서 `python production/smoke_template.py` 및 브라우저 시험을 수행한다. Canvas 생성·사람 청취·휴대폰 잠금 재생을 자동 시험 통과로 대체하지 않는다.
+
+
+## 문장별 음성 제작 필수 규칙
+
+한 문장 = 한 생성 요청 = 한 개별 WAV/MP3다. 문단 전체나 배우가 이어 읽을 여러 문장을 한 요청으로 묶지 않는다. 배포 ZIP은 개별 문장 MP3를 유지한다. 합본은 선택적 청취 파생물이며 문장 파일을 대체하지 않는다.
+
+각 segment는 sentence_id, paragraph_id, context_before/context_after(문장 ID 배열), 문장별 performance.sentence_persona, performance.design을 가진다. 기본 배역 페르소나는 유지하되 해당 문장의 상대·목적·현재 감정을 별도로 적용한다. 같은 문단의 분위기·호흡을 이어 주며 분리 생성한다.
+
+앞뒤의 ‘울부짖었다·웃었다·울었다’ 같은 묘사를 읽고 누구의 어느 발화에 적용되는지 찾는다. performance.cue_links에 source_sentence_id, target_sentence_id, cue_text, instruction을 기록한다. 해당 단서가 없으면 빈 배열로 명시한다. 단서가 다른 인물/시점이면 억지로 적용하지 않는다. 웃음·울음의 강도·위치는 근거에 맞추며 기계적으로 덧붙이지 않는다.
+
+검토는 speaker_pass, cue_pass, continuity_pass의 세 항목으로 각각 기록한다. review.evidence와 review.sentence_boundary_evidence에는 실제 문맥·분할 근거를 적는다. 생성기나 정규식이 검토를 confirmed로 자동 변경해서는 안 된다. 화자가 애매하면 review.attribution=user_review_required로 두고 질문 대상 문장·앞뒤 문맥·후보·판단 근거를 사용자에게 제시한다. 승인 전 그 문장은 생성 차단한다. 나레이터로 임의 대체하지 않는다.
+
+문장 분할 시 인용부호·약어·소수·말줄임표·감탄사에 주의한다. 문장 경계의 자동 탐지는 보조 검사일 뿐 의미 검토가 아니다. 기존 문단의 문자 범위와 문장 순서를 유지하며 누락·중복을 대조한다. 이전 문단형 대본은 신규 문장 검토 전까지 생성 불가 초안이다.

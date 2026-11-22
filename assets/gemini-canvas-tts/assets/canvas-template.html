@@ -362,11 +362,14 @@ const apiKey = "";
         }
         function makePrompt(index) {
             const turn=turns[index],p=turn.performance;
+            if(!turn.sentence_id||!turn.paragraph_id||!p.sentence_persona||['speaker_pass','cue_pass','continuity_pass'].some(k=>turn.review?.[k]!=='confirmed'))throw Error('문장별 화자·연기·문맥 검토가 필요합니다. 생성 보류.');
             if (!turn.review || ['attribution','classification','performance'].some(k=>turn.review[k]!=='confirmed') || !turn.review.evidence?.trim() || /^(pending|unresolved|unknown|placeholder|tbd)(?:[_\s:-]|$)/i.test(turn.cast_id)) throw new Error('대본 검토 정보가 없거나 미확정 화자입니다. 원문 문맥과 배역을 수정한 검증 완료 HTML을 사용하세요.');
             if (!turn.voice || originalEpisode.voices[turn.speaker]!==turn.voice || !p.character_persona) throw new Error('고정 배역 목소리 또는 페르소나가 일치하지 않습니다.');
             return `드라마 오디오북. 낭독 언어: ${originalEpisode.language}. 청자에게 친절하고 선명하게. 화자: ${turn.speaker}. 목소리 정체성 고정. 전화 효과 없음.
 모델: ${turn.model}; 배역표 지문: ${turn.cast_sha256}; 고정 음색: ${turn.voice}; 배역 ID: ${turn.cast_id}; 발화 종류: ${turn.kind}.
 배역 페르소나: ${p.character_persona}
+이 문장에 적용할 페르소나: ${p.sentence_persona}
+문맥 연기 근거: ${JSON.stringify(p.cue_links||[])}
 현재 인물 상태: ${p.character_state}
 감정: ${p.emotion}; 강도 ${p.intensity}; 속도 ${p.pace}; 발성 ${p.delivery}.
 마이크 거리와 친밀감: ${p.mic_direction}
