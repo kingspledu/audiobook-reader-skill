@@ -72,6 +72,7 @@ def generate(book, output):
                         cast_sha256=cast_hash, performance=performance)
             if 'review' in segment:
                 unit['review'] = segment['review']
+            for key in ('sentence_id','paragraph_id','context_before','context_after'):unit[key]=segment.get(key)
             units.append(unit)
             rows.append(dict(chapter=number, order=order, scene_id=scene, segment_id=unit['id'],
                              speaker=unit['speaker'], kind=role, cast_id=cid, filename=filename,

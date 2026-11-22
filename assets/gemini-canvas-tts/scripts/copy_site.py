@@ -1,4 +1,5 @@
 """One renderer for Canvas HTML and its byte-verified code-copy website."""
+from sentence_contract import validate_sentence
 import argparse
 import hashlib
 import html
@@ -24,6 +25,8 @@ def render_episode(episode, stem, title):
         raise ValueError('Unsafe filename stem')
     if episode.get('execution_mode') != 'canvas-host':
         raise ValueError('Canvas host only')
+    for scene in episode['scenes']:
+        for segment in scene['segments']:validate_sentence(segment)
     template = (ROOT/'assets/canvas-template.html').read_text('utf8')
     encoded = json.dumps(episode, ensure_ascii=False).replace('<', '\\u003c').replace('\u2028', '\\u2028').replace('\u2029', '\\u2029')
     values = {'__EPISODE_JSON__': encoded, '__FILE_STEM__': stem, '__TITLE_HTML__': html.escape(title)}
