@@ -3,7 +3,7 @@ import argparse,hashlib,json,re,shutil
 from pathlib import Path
 from bs4 import BeautifulSoup
 SOURCE=Path(__file__).resolve().parent
-VERSION='landscape-20261122-v2'
+VERSION='landscape-20261122-tablet-v3'
 def digest(p):return hashlib.sha256(p.read_bytes()).hexdigest()
 def install(site):
  report=[]

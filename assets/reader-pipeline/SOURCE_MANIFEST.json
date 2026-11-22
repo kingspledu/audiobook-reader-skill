@@ -42,9 +42,9 @@
     "docs/AUDIOBOOK_READER_TEMPLATE_KO.md": "159938795ad4e7e68002b673ba1f237fe79e72b6423c4928e4f4aa32177bc8cc",
     "docs/requirements-audiobook-full-lock.txt": "47aa79a7f623bac9dea48e1f62ff27fc46048a6086058468c427ba902c5a1378",
     "production/landscape-test/manifest.webmanifest": "3cf6ddbc1a6c768ab0b4e715d97b398540ee2cfdcb5b84aad4ffeff4657d486d",
-    "production/landscape-reader.js": "fa98362bc791530aa8d0b01859b85b3999ac94e0c131f304ffc32a5bd056057f",
-    "production/landscape-reader.css": "c1be850f4e62815371ebb984ba15c086e3983c95748c9b21a794f477d2c87a20",
-    "production/install_landscape_reader.py": "62c9a606863f877c7bfc829f5ead20b5310b834eaad4893aabbcf6e9295a179f"
+    "production/landscape-reader.js": "94962d36605208b12133e0c4ca2bfecd6157bbd9e7c531a8b7edfd6f48f9f5b7",
+    "production/landscape-reader.css": "b85a33968f3f963b5827c6a56d7dcc984cb2d7db687befcad9c7d58d42a89d7d",
+    "production/install_landscape_reader.py": "1664df9ee67347a7f77d37dd11d4f56f9f8e4ec7efa6003d98da85c56a3fddac"
   },
   "dependencies": {
     "beautifulsoup4": "4.15.0",

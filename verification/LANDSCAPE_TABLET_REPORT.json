@@ -1,0 +1,139 @@
+{
+  "status": "PASS",
+  "volumes": [
+    {
+      "volume": 1,
+      "sizes": [
+        {
+          "width": 1024,
+          "height": 768,
+          "active": true,
+          "pressed": "true",
+          "overflow": false,
+          "artRight": 442.546875,
+          "textLeft": 450.546875,
+          "top": 32,
+          "audio": 36
+        },
+        {
+          "width": 1180,
+          "height": 820,
+          "active": true,
+          "pressed": "true",
+          "overflow": false,
+          "artRight": 511.1875,
+          "textLeft": 519.1875,
+          "top": 32,
+          "audio": 36
+        },
+        {
+          "width": 1366,
+          "height": 1024,
+          "active": true,
+          "pressed": "true",
+          "overflow": false,
+          "artRight": 593.03125,
+          "textLeft": 601.03125,
+          "top": 32,
+          "audio": 36
+        }
+      ],
+      "manual_modes": true,
+      "preference_persisted": true,
+      "fullscreen_enter_exit": true,
+      "unsupported_fullscreen_help": true,
+      "single_player": true,
+      "errors": []
+    },
+    {
+      "volume": 2,
+      "sizes": [
+        {
+          "width": 1024,
+          "height": 768,
+          "active": true,
+          "pressed": "true",
+          "overflow": false,
+          "artRight": 442.546875,
+          "textLeft": 450.546875,
+          "top": 32,
+          "audio": 36
+        },
+        {
+          "width": 1180,
+          "height": 820,
+          "active": true,
+          "pressed": "true",
+          "overflow": false,
+          "artRight": 511.1875,
+          "textLeft": 519.1875,
+          "top": 32,
+          "audio": 36
+        },
+        {
+          "width": 1366,
+          "height": 1024,
+          "active": true,
+          "pressed": "true",
+          "overflow": false,
+          "artRight": 593.03125,
+          "textLeft": 601.03125,
+          "top": 32,
+          "audio": 36
+        }
+      ],
+      "manual_modes": true,
+      "preference_persisted": true,
+      "fullscreen_enter_exit": true,
+      "unsupported_fullscreen_help": true,
+      "single_player": true,
+      "errors": []
+    },
+    {
+      "volume": 3,
+      "sizes": [
+        {
+          "width": 1024,
+          "height": 768,
+          "active": true,
+          "pressed": "true",
+          "overflow": false,
+          "artRight": 442.546875,
+          "textLeft": 450.546875,
+          "top": 32,
+          "audio": 36
+        },
+        {
+          "width": 1180,
+          "height": 820,
+          "active": true,
+          "pressed": "true",
+          "overflow": false,
+          "artRight": 511.1875,
+          "textLeft": 519.1875,
+          "top": 32,
+          "audio": 36
+        },
+        {
+          "width": 1366,
+          "height": 1024,
+          "active": true,
+          "pressed": "true",
+          "overflow": false,
+          "artRight": 593.03125,
+          "textLeft": 601.03125,
+          "top": 32,
+          "audio": 36
+        }
+      ],
+      "manual_modes": true,
+      "preference_persisted": true,
+      "fullscreen_enter_exit": true,
+      "unsupported_fullscreen_help": true,
+      "single_player": true,
+      "errors": []
+    }
+  ],
+  "manual_override_at_1920x1080": true,
+  "physical_ipad_android_tested": false
+}
