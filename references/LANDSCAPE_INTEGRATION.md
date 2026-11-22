@@ -126,6 +126,25 @@ dispatchEvent(new CustomEvent('tiger-active-sentence', {
 
 ## 8. 오프라인·릴리스 절차
 
+### 전체화면 모드의 필수 구현·검증
+
+**전체모드 = 브라우저 전체화면**, **가로모드 = 삽화/본문 분할 배치**다. 두 상태는 독립적이다. 가로모드 없이 전체화면으로 읽을 수 있고, 전체화면을 종료해도 분할 선택과 재생 위치는 유지한다.
+
+1. `#landscape-fullscreen` 버튼은 기본 배치와 분할 배치 모두에서 보인다. 버튼의 직접 클릭 안에서 `document.documentElement.requestFullscreen()`을 호출한다. 자동 로딩·타이머에서 요청하지 않는다.
+2. `document.fullscreenElement`가 있으면 `document.exitFullscreen()`으로 종료한다. `fullscreenchange`에서 버튼 문구를 전체모드/전체모드 종료로 갱신하고 aria-label·aria-pressed를 실제 상태에 맞춘다. 브라우저 자체 종료도 같은 이벤트로 처리한다.
+3. API가 없거나 요청이 거부되면 기존 `#install-app` 안내를 사용한다. iOS Safari는 공유→홈 화면에 추가 후 독립 실행을 안내한다. 이것을 Fullscreen API 성공으로 기록하지 않는다. 앱 설치 화면과 전체화면은 구별한다.
+4. PWA manifest의 start_url·scope·display와 아이콘, 설치 안내 dialog를 유지한다. 이미 설치된 standalone 화면에서도 모드 전환 때문에 재생기를 재생성하지 않는다. iframe/Canvas에서 막힌 전체화면을 일반 읽기 페이지의 실패로 혼동하지 않는다.
+5. 전체화면 전환 시 오디오 트랙·currentTime·속도·문장 ID·선택된 가로 배치가 바뀌면 실패다. 요청 거부 뒤에도 버튼은 다시 클릭할 수 있어야 하며 빈 모달이나 멈춘 UI로 남기지 않는다.
+6. 3권의 실제 전체화면 진입/종료와 미지원·거부 모의 환경을 검사한다. Headless Chrome 결과는 실물 iPad/Android 검증을 대체하지 않는다. fullscreen 상태는 localStorage에 저장해 다음 진입 때 강제 재요청하지 않는다.
+
+스킬 루트에서 포함된 실제 모듈로 전체화면 회귀 검사를 실행한다(Playwright Python·설치된 Chrome 필요).
+
+```shell
+python scripts/verify_fullscreen.py --browser-path CHROME_EXECUTABLE --report FULLSCREEN_REPORT.json
+```
+
+이 검사는 API 진입·버튼 종료·브라우저 자체 종료·거부·미지원 안내, 분할 상태 보존과 기본 배치의 버튼 노출을 확인한다. 모델 호출과 실제 음성 청취는 하지 않는다.
+
 설치기는 HTML, audiobook.js 이벤트, 공통 JS/CSS, sw.js, offline-manifest.json을 갱신한다. 모든 권 HTML이 공통 모듈을 로드하는지 확인한다. 스크립트 URL 버전과 CORE 버전은 함께 올린다. manifest의 `./`와 index.html은 같은 HTML을 가리키므로 둘의 해시를 모두 갱신하고 바이트 합계도 각각 반영한다. 기존 오디오 항목의 SHA는 그대로여야 한다.
 
 네트워크가 끊겼을 때 새 CORE 앱 화면을 이전 SAVED 화면보다 먼저 선택한다. 이미 다운로드한 MP3·그림 캐시는 유지한다. 테스트에서는 의도적으로 오래된 SAVED HTML을 넣고 재접속해 새 모드가 유지되는지 확인한다. 오프라인 첫 진입은 온라인 저장이 먼저 필요하다.
