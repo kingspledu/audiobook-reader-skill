@@ -1,0 +1,7 @@
+{
+  "python": "3.12.2",
+  "platform": "Windows-11-10.0.26300-SP0",
+  "packages": 27,
+  "extra_dependencies": "default extras only",
+  "lock": "requirements-audiobook-full-lock.txt"
+}

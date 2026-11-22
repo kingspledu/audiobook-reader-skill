@@ -1,0 +1,4 @@
+interface:
+  display_name: "오디오북 읽기 사이트"
+  short_description: "Canvas TTS HTML부터 삽화·오프라인 오디오북 사이트까지 제작"
+  default_prompt: "Use $audiobook-reader to generate reading HTML and Canvas TTS HTML, then connect MP3s with verified word timing."

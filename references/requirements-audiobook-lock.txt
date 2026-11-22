@@ -1,0 +1,8 @@
+beautifulsoup4==4.15.0
+numpy==2.5.3
+av==16.1.0
+faster-whisper==1.2.1
+imageio-ffmpeg==0.6.0
+huggingface-hub==0.36.2
+ctranslate2==4.7.1
+tokenizers==0.22.2

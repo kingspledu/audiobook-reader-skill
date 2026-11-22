@@ -1,0 +1,85 @@
+{
+  "status": "PASS",
+  "skill_format": "PASS",
+  "content_hashes": "PASS",
+  "workspace_initialization": "PASS",
+  "tts_html_generation_and_verification": "PASS",
+  "reader_pipeline_smoke": "PASS",
+  "wav_to_mp3_index_bridge": "PASS",
+  "real_canvas_generation": false,
+  "human_listening": false,
+  "physical_phone_lock": false,
+  "steps": [
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-X",
+        "utf8",
+        "USER_HOME\\.codex\\skills\\.system\\skill-creator\\scripts\\quick_validate.py",
+        "PROJECT_ROOT\\audiobook-reader-skill"
+      ],
+      "exit_code": 0,
+      "output_tail": "Skill is valid!\n"
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "PROJECT_ROOT\\audiobook-reader-skill\\scripts\\validate_package.py"
+      ],
+      "exit_code": 0,
+      "output_tail": "{\"status\": \"PASS\", \"manifest_files\": 43, \"reader_source_files\": 42, \"no_real_audio_or_credentials\": true}\n"
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "PROJECT_ROOT\\audiobook-reader-skill\\scripts\\init_workspace.py",
+        "--out",
+        "PROJECT_ROOT\\production\\published-skill-bx5mt1me\\project"
+      ],
+      "exit_code": 0,
+      "output_tail": "WORKSPACE\\_����\\_TFSOB\\production\\published-skill-bx5mt1me\\project\n"
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "tts/scripts/build.py",
+        "tts/assets/example-book.json",
+        "--out",
+        "output"
+      ],
+      "exit_code": 0,
+      "output_tail": "Built 1 chapters, 3 segments\n"
+    },
+    {
+      "command": [
+        "node",
+        "tts/scripts/verify.cjs",
+        "output"
+      ],
+      "exit_code": 0,
+      "output_tail": "PASS BOOKSHOP_C01_V01_GEMINI_CANVAS_TTS.html 3 segments; syntax, index, DSP, mocked batch\nActual generation/listening/Canvas download: NOT tested\n"
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "production/smoke_template.py"
+      ],
+      "exit_code": 0,
+      "output_tail": "{\n  \"status\": \"PASS\",\n  \"fresh_unpacked_project\": \"C:\\\\Users\\\\\\uace0\\ubcf4\\ubbfc\\\\Downloads\\\\_\\ubcf4\\uc874\\\\_TFSOB\\\\production\\\\published-skill-bx5mt1me\\\\project\\\\production\\\\audio-template-smoke-kixsnu2p\",\n  \"initial_reader_html\": \"PASS\",\n  \"source_sentence_preservation\": \"PASS\",\n  \"fixture_chapters\": [\n    1,\n    11,\n    21\n  ],\n  \"fixture_segments\": 5,\n  \"real_whisper_executed\": true,\n  \"fixture_audio\": \"synthetic sine wave, no speech\",\n  \"claims_not_covered\": [\n    \"human-annotated speech timing accuracy\",\n    \"human listening\",\n    \"physical phone lock playback\",\n    \"full book processing\"\n  ],\n  \"offline_hashes\": \"PASS\"\n}\n"
+    },
+    {
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "PROJECT_ROOT\\audiobook-reader-skill\\scripts\\package_tts_audio.py",
+        "--index",
+        "PROJECT_ROOT\\production\\published-skill-bx5mt1me\\project\\output\\BOOKSHOP_AUDIO_INDEX_V01.json",
+        "--audio-dir",
+        "PROJECT_ROOT\\production\\published-skill-bx5mt1me\\audio",
+        "--out",
+        "PROJECT_ROOT\\production\\published-skill-bx5mt1me\\bridge"
+      ],
+      "exit_code": 0,
+      "output_tail": "WORKSPACE\\_����\\_TFSOB\\production\\published-skill-bx5mt1me\\bridge\\READER_C01_MP3.zip\n"
+    }
+  ]
+}

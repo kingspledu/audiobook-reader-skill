@@ -1,0 +1,18 @@
+{
+  "book_id": "sample-reader",
+  "title": "Sample Audio Reader",
+  "language": "en",
+  "chapters": [
+    {"number": 1, "title": "A quiet morning", "paragraphs": [
+      {"sentences": ["A gentle tone. ", "A gentle tone."]},
+      {"sentences": ["A gentle tone."]}
+    ]},
+    {"number": 11, "title": "A new beginning", "paragraphs": [
+      {"sentences": ["A gentle tone."]}
+    ]},
+    {"number": 21, "title": "An evening", "paragraphs": [
+      {"sentences": ["A gentle tone."]}
+    ]}
+  ],
+  "vocabulary": [{"term": "gentle", "meaning": "부드러운"}]
+}

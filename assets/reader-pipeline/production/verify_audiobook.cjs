@@ -1,0 +1,30 @@
+const { chromium }=require('../../../blog-prompt-check/node_modules/playwright-core');
+const fs=require('fs'),path=require('path');
+(async()=>{
+ const browser=await chromium.launch({executablePath:'C:/Program Files/Google/Chrome/Application/chrome.exe',headless:true,args:['--autoplay-policy=no-user-gesture-required']});
+ const page=await browser.newPage({viewport:{width:1280,height:900}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('http://127.0.0.1:8765/volume-1/#chapter-001',{waitUntil:'domcontentloaded'});
+ await page.waitForFunction(()=>document.querySelector('.audio-chapter option'));
+ await page.waitForFunction(()=>!document.querySelector('.audio-play').disabled);
+ await page.evaluate(()=>{const original=TigerClipPlayer.prototype.play;TigerClipPlayer.prototype.play=function(...args){window.testAudio=this;return original.apply(this,args)}});
+ const original=await page.locator('.reading-sentence').allTextContents();
+ await page.locator('.audio-play').click();await page.waitForFunction(()=>window.testAudio.currentTime>.5);
+ await page.waitForFunction(()=>document.querySelector('.audio-word-active'));
+ await page.screenshot({path:path.join(__dirname,'audiobook/playing-desktop.png'),fullPage:false});
+ await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(__dirname,'audiobook/playing-mobile.png'),fullPage:false});await page.setViewportSize({width:1280,height:900});
+ const playback=await page.evaluate(()=>({time:testAudio.currentTime,paused:testAudio.paused,word:document.querySelector('.audio-word-active')?.textContent,sentence:document.querySelector('.audio-sentence-active')?.dataset.sentence,src:testAudio.track.segments[0].src,scheduled:testAudio.nodes.length,scheduled_gaps:testAudio.nodes.slice(1).map((n,i)=>n.when-testAudio.nodes[i].until)}));
+ if(playback.scheduled_gaps.some(g=>Math.abs(g)>.001))throw Error('Unexpected scheduling gap');
+ await page.locator('.audio-play').click();const t=await page.evaluate(()=>testAudio.currentTime);await page.waitForTimeout(350);if(Math.abs(await page.evaluate(()=>testAudio.currentTime)-t)>.1)throw Error('Pause failed');
+ await page.locator('.audio-rate').selectOption('1.25');if(await page.evaluate(()=>testAudio.playbackRate)!==1.25)throw Error('Rate failed');
+ await page.locator('.reading-sentence').nth(15).click();await page.waitForFunction(()=>testAudio.currentTime>20);await page.locator('.audio-play').click();
+ if(JSON.stringify(original)!==JSON.stringify(await page.locator('.reading-sentence').allTextContents()))throw Error('Text changed');
+ const vocab=page.locator('#chapter-001 .vocab-word').first();await vocab.click();if(await vocab.getAttribute('aria-expanded')!=='true')throw Error('Vocabulary failed');await vocab.click();
+ await page.screenshot({path:path.join(__dirname,'audiobook/desktop.png'),fullPage:false});
+ await page.setViewportSize({width:390,height:844});await page.screenshot({path:path.join(__dirname,'audiobook/mobile.png'),fullPage:false});
+ const overflow=await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1);if(overflow)throw Error('Mobile horizontal overflow');
+ if(errors.length)throw Error(errors.join('\n'));
+ const volumes=[];
+ for(const volume of [2,3]){const p=await browser.newPage();p.on('pageerror',e=>errors.push(e.message));await p.goto(`http://127.0.0.1:8765/volume-${volume}/`,{waitUntil:'domcontentloaded'});await p.waitForFunction(()=>document.querySelector('.audio-chapter option')&&!document.querySelector('.audio-play').disabled);await p.evaluate(()=>{const original=TigerClipPlayer.prototype.play;TigerClipPlayer.prototype.play=function(...args){window.testAudio=this;return original.apply(this,args)}});await p.locator('.audio-play').click();await p.waitForFunction(()=>testAudio.currentTime>.5);volumes.push(await p.evaluate(v=>({volume:v,chapter:testAudio.track.chapter,time:testAudio.currentTime,clip:testAudio.track.segments[0].src}),volume));await p.close()}
+ if(errors.length)throw Error(errors.join('\n'));
+ const report={playback,pause:'PASS',speed:'PASS',sentence_seek:'PASS',text_preservation:'PASS',vocabulary:'PASS',mobile_overflow:'PASS',other_volumes:volumes,javascript_errors:errors,actual_listening:false};fs.writeFileSync(path.join(__dirname,'audiobook/browser-validation.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});

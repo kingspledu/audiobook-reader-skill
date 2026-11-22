@@ -1,0 +1,251 @@
+{
+  "status": "PASS",
+  "fresh_unpacked_project": "PROJECT_ROOT\\production\\audio-template-smoke-6hq7ztj5",
+  "initial_reader_html": "PASS",
+  "source_sentence_preservation": "PASS",
+  "fixture_chapters": [
+    1,
+    11,
+    21
+  ],
+  "fixture_segments": 5,
+  "real_whisper_executed": true,
+  "fixture_audio": "synthetic sine wave, no speech",
+  "claims_not_covered": [
+    "human-annotated speech timing accuracy",
+    "human listening",
+    "physical phone lock playback",
+    "full book processing"
+  ],
+  "offline_hashes": "PASS",
+  "steps": [
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/build_reading_html.py",
+        "--input",
+        "book.json",
+        "--output",
+        "story-reader"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "{\"reading_html_created_first\": true, \"chapters\": 3, \"sentences\": 5, \"volumes\": 3, \"input\": \"C:\\\\Users\\\\\\uace0\\ubcf4\\ubbfc\\\\Downloads\\\\_\\ubcf4\\uc874\\\\_TFSOB\\\\production\\\\audio-template-smoke-6hq7ztj5\\\\book.json\", \"output\": \"C:\\\\Users\\\\\\uace0\\ubcf4\\ubbfc\\\\Downloads\\\\_\\ubcf4\\uc874\\\\_TFSOB\\\\production\\\\audio-template-smoke-6hq7ztj5\\\\story-reader\"}\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "git",
+        "init",
+        "--quiet"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "git",
+        "add",
+        "--",
+        "."
+      ],
+      "exit_code": 0,
+      "stdout_tail": "",
+      "stderr_tail": "warning: in the working copy of 'volume-1/app.js', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'volume-1/style.css', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'volume-2/app.js', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'volume-2/style.css', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'volume-3/app.js', LF will be replaced by CRLF the next time Git touches it\nwarning: in the working copy of 'volume-3/style.css', LF will be replaced by CRLF the next time Git touches it\n"
+    },
+    {
+      "command": [
+        "git",
+        "-c",
+        "user.name=Smoke",
+        "-c",
+        "user.email=smoke@example.invalid",
+        "commit",
+        "--quiet",
+        "-m",
+        "Initial source reader fixture"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/prepare_audiobook.py"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "[\n  {\n    \"chapter\": 1,\n    \"segments\": 3,\n    \"mp3_bytes\": 148713,\n    \"spoken_words\": 9,\n    \"unmapped_words\": 0,\n    \"unmapped_segments\": 0,\n    \"complete\": true,\n    \"missing\": []\n  },\n  {\n    \"chapter\": 11,\n    \"segments\": 1,\n    \"mp3_bytes\": 49571,\n    \"spoken_words\": 3,\n    \"unmapped_words\": 0,\n    \"unmapped_segments\": 0,\n    \"complete\": true,\n    \"missing\": []\n  },\n  {\n    \"chapter\": 21,\n    \"segments\": 1,\n    \"mp3_bytes\": 49571,\n    \"spoken_words\": 3,\n    \"unmapped_words\": 0,\n    \"unmapped_segments\": 0,\n    \"complete\": true,\n    \"missing\": []\n  }\n]\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/measure_new_clips.py"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "{\"new_clips_measured\": 5, \"total\": 5}\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/bootstrap_speaker_levels.py"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "Baseline created for 1 speakers\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/normalize_clips.py"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "{\"chapter\": 1, \"clips\": 3, \"bytes\": 148713}\n{\"chapter\": 11, \"clips\": 1, \"bytes\": 49571}\n{\"chapter\": 21, \"clips\": 1, \"bytes\": 49571}\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/whisper_force_align.py"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "{\"chapter\": 1, \"finished\": 3, \"total\": 3, \"elapsed_seconds\": 1, \"matched_words\": 2, \"expected_words\": 9}\n{\"chapter\": 11, \"finished\": 1, \"total\": 1, \"elapsed_seconds\": 2, \"matched_words\": 0, \"expected_words\": 3}\n{\"chapter\": 21, \"finished\": 1, \"total\": 1, \"elapsed_seconds\": 3, \"matched_words\": 0, \"expected_words\": 3}\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/publish_audiobook.py"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "[\n  {\n    \"chapter\": 1,\n    \"files\": 3,\n    \"matched_words\": 2,\n    \"total_words\": 9,\n    \"coverage\": 0.2222\n  },\n  {\n    \"chapter\": 11,\n    \"files\": 1,\n    \"matched_words\": 0,\n    \"total_words\": 3,\n    \"coverage\": 0.0\n  },\n  {\n    \"chapter\": 21,\n    \"files\": 1,\n    \"matched_words\": 0,\n    \"total_words\": 3,\n    \"coverage\": 0.0\n  }\n]\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/install_offline_v2.py"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "1 19 195869\n2 17 95100\n3 17 95081\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/build_landscape_test.py"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "{\"chapters\": 3, \"sentences\": 5, \"test_page\": \"C:\\\\Users\\\\\\uace0\\ubcf4\\ubbfc\\\\Downloads\\\\_\\ubcf4\\uc874\\\\_TFSOB\\\\production\\\\audio-template-smoke-6hq7ztj5\\\\story-reader\\\\landscape-test\"}\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/validate_reader_audio.py"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "{\n  \"chapters\": [\n    1,\n    11,\n    21\n  ],\n  \"separate_mp3_count\": 5,\n  \"source_sentence_words\": 15,\n  \"timed_words\": 2,\n  \"word_timing_coverage\": 0.13333333333333333,\n  \"same_paragraph_boundaries\": 1,\n  \"reader_text_vocabulary_illustrations_preserved\": \"PASS\",\n  \"paragraph_break_silence_preserved\": \"PASS\",\n  \"timing_references_and_ranges\": \"PASS\",\n  \"human_listening\": false\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/validate_audio_assets.py"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "{\"speaker\": \"Test Narrator\", \"expected\": -0.1, \"measured\": -0.3642612099647522}\n{\n  \"clips_checked\": 5,\n  \"original_hashes\": \"PASS\",\n  \"separate_mp3_files\": \"PASS\",\n  \"speaker_sample_checks\": [\n    {\n      \"speaker\": \"Test Narrator\",\n      \"expected_gain_db\": -0.1,\n      \"measured_rms_change_db\": -0.3643,\n      \"peak\": 0.1117,\n      \"duration_and_sample_rate\": \"PASS\"\n    }\n  ],\n  \"encoder_common_attenuation_db\": -0.2643,\n  \"speaker_relative_gain_error_spread_db\": 0.0,\n  \"gain_policy\": \"constant per speaker; attenuation only; no per-clip leveling, compression, silence editing, or merge\",\n  \"human_listening\": false\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/prepare_audio_release.py"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "{\"files\": 39, \"mp3\": 5, \"bytes\": 367797, \"merged_tracks\": 0}\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "production/run_pipeline.py"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "pendencies unchanged\"}, {\"chapter\": 21, \"action\": \"reuse\", \"reason\": \"audio/transcript/speaker/order/settings/dependencies unchanged\"}]\n{\"new_clips_measured\": 0, \"total\": 5}\n{\"chapter\": 1, \"clips\": 3, \"bytes\": 148713}\n{\"chapter\": 11, \"clips\": 1, \"bytes\": 49571}\n{\"chapter\": 21, \"clips\": 1, \"bytes\": 49571}\n{\"chapter\": 1, \"finished\": 3, \"total\": 3, \"elapsed_seconds\": 1, \"matched_words\": 2, \"expected_words\": 9}\n{\"chapter\": 11, \"finished\": 1, \"total\": 1, \"elapsed_seconds\": 2, \"matched_words\": 0, \"expected_words\": 3}\n{\"chapter\": 21, \"finished\": 1, \"total\": 1, \"elapsed_seconds\": 3, \"matched_words\": 0, \"expected_words\": 3}\n[\n  {\n    \"chapter\": 1,\n    \"files\": 3,\n    \"matched_words\": 2,\n    \"total_words\": 9,\n    \"coverage\": 0.2222\n  },\n  {\n    \"chapter\": 11,\n    \"files\": 1,\n    \"matched_words\": 0,\n    \"total_words\": 3,\n    \"coverage\": 0.0\n  },\n  {\n    \"chapter\": 21,\n    \"files\": 1,\n    \"matched_words\": 0,\n    \"total_words\": 3,\n    \"coverage\": 0.0\n  }\n]\n{\"chapters\": 3, \"sentences\": 5, \"test_page\": \"C:\\\\Users\\\\\\uace0\\ubcf4\\ubbfc\\\\Downloads\\\\_\\ubcf4\\uc874\\\\_TFSOB\\\\production\\\\audio-template-smoke-6hq7ztj5\\\\story-reader\\\\landscape-test\"}\n1 19 195869\n2 17 95100\n3 17 95081\n{\"speaker\": \"Test Narrator\", \"expected\": -0.1, \"measured\": -0.3642612099647522}\n{\n  \"clips_checked\": 5,\n  \"original_hashes\": \"PASS\",\n  \"separate_mp3_files\": \"PASS\",\n  \"speaker_sample_checks\": [\n    {\n      \"speaker\": \"Test Narrator\",\n      \"expected_gain_db\": -0.1,\n      \"measured_rms_change_db\": -0.3643,\n      \"peak\": 0.1117,\n      \"duration_and_sample_rate\": \"PASS\"\n    }\n  ],\n  \"encoder_common_attenuation_db\": -0.2643,\n  \"speaker_relative_gain_error_spread_db\": 0.0,\n  \"gain_policy\": \"constant per speaker; attenuation only; no per-clip leveling, compression, silence editing, or merge\",\n  \"human_listening\": false\n}\n",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "production/clip-player.js"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "production/media-player.js"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "production/audiobook.js"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "production/offline-v2.js"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "production/landscape-test/test.js"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "node",
+        "--check",
+        "production/reader-template/app.js"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "",
+      "stderr_tail": ""
+    },
+    {
+      "command": [
+        "PROJECT_ROOT\\production\\verification-venv\\Scripts\\python.exe",
+        "-c",
+        "from pathlib import Path; import hashlib,json; p=Path('story-reader'); print('READY',len(list(p.glob('volume-*/audio/ch*/clips/*.mp3'))))"
+      ],
+      "exit_code": 0,
+      "stdout_tail": "READY 5\n",
+      "stderr_tail": ""
+    }
+  ]
+}

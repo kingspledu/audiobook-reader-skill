@@ -1,0 +1,54 @@
+{
+  "scope": "Same Windows/Python/Node/dependency/model environment; two separately unpacked clean project directories; 3 sample chapters and 5 artificial-tone clips per run",
+  "run_success": {
+    "passed": 2,
+    "total": 2
+  },
+  "cli_success": {
+    "passed": 44,
+    "total": 44,
+    "percent": 100.0
+  },
+  "browser_success": {
+    "passed": 2,
+    "total": 2
+  },
+  "source_hash_integrity": {
+    "passed": 36,
+    "total": 36,
+    "percent": 100.0
+  },
+  "output_binary_repeatability": {
+    "identical": 70,
+    "total": 72,
+    "percent": 97.22222222222221,
+    "different_files": [
+      "volume-1/audio/ch01/timing.json",
+      "volume-1/offline-manifest.json"
+    ],
+    "timing_differences": [
+      {
+        "file": "volume-1/audio/ch01/timing.json",
+        "order": 1,
+        "word": 1,
+        "boundary": "start",
+        "first": 1.44,
+        "second": 1.42,
+        "delta_seconds": 0.020000000000000018
+      },
+      {
+        "file": "volume-1/audio/ch01/timing.json",
+        "order": 2,
+        "word": 1,
+        "boundary": "end",
+        "first": 1.66,
+        "second": 1.64,
+        "delta_seconds": 0.020000000000000018
+      }
+    ]
+  },
+  "actual_speech_accuracy": "NOT TESTED",
+  "physical_phone_lock": "NOT TESTED",
+  "fresh_dependency_install": "NOT TESTED; existing installed dependencies and cached Whisper model used",
+  "full_real_book": "NOT TESTED by this smoke; small fixture only"
+}

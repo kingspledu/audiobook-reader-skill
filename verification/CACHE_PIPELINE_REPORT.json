@@ -1,0 +1,11 @@
+{
+  "cached_rebuild_output_equality": "PASS",
+  "unchanged_chapters_reused": "PASS",
+  "changed_transcript_only_chapter1_invalidated": "PASS",
+  "same_filename_changed_audio_reextracted": "PASS",
+  "modified_audio_rebuild_equality": "PASS",
+  "originals_backed_up": true,
+  "fixture": "C:\\Users\\\uace0\ubcf4\ubbfc\\Downloads\\_\ubcf4\uc874\\_TFSOB\\production\\audio-template-smoke-6hq7ztj5",
+  "human_listening": false,
+  "alignment_code_change_invalidates_affected_chapters": "PASS"
+}

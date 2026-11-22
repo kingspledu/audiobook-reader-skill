@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "initial_html_controls": [
+    "font",
+    "theme",
+    "vocabulary"
+  ],
+  "audio_sentence_highlight": "PASS",
+  "source_preserved": "PASS",
+  "landscape": {
+    "max": "102",
+    "image": "../volume-1/assets/de550db728cf31f3.svg",
+    "overflow": false
+  },
+  "console_errors": [],
+  "fixture": "artificial tone; not speech accuracy",
+  "physical_phone": false
+}
