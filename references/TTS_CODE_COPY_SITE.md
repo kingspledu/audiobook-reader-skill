@@ -68,3 +68,15 @@ python tts/scripts/verify_copy_site.py output/code-copy --report copy-browser-re
 설치된 Chrome을 쓰려면 `--browser-path "Chrome 실행파일 경로"`를 지정한다. 검증기는 모든 장의 템플릿 재렌더링 바이트·파일 크기·SHA, 실제 브라우저 클립보드 내용, HTTP 오류·해시 불일치 거부, 빠른 장 전환, 클립보드 거부 시 수동 선택을 검사한다. Windows 클립보드의 CRLF 변환만 정규화해서 비교하며 HTML 내용은 바뀌면 안 된다. 다운로드 파일 바이트는 정규화 없이 비교한다.
 
 배포 후 공개 manifest와 모든 장 HTML을 다시 내려받아 해시를 대조한다. 정적 검사·모의 생성·브라우저 복사 통과는 Gemini Canvas의 실제 음성 생성이나 사람 청취 검증을 의미하지 않는다. 모델 지원 여부와 실제 생성·다운로드는 Canvas에서 별도로 확인한다.
+
+## 버튼부터 ZIP까지 반복 가능한 스모크 테스트
+
+스킬 루트에서 아래 명령을 실행한다. PUBLIC_SITE에는 배포 사이트에서 내려받은 index.html·manifest.json·chapters/가 있어야 한다. ENCODER는 `https://cdn.jsdelivr.net/npm/lamejs@1.2.1/lame.min.js`에서 받은 파일이다. 출력은 스킬 밖의 새 빈 폴더를 지정한다.
+
+```shell
+python scripts/smoke_canvas_zip.py --out NEW_EMPTY_TEST_DIR --public-site PUBLIC_SITE --encoder ENCODER --browser-path CHROME_EXECUTABLE
+```
+
+테스트는 스킬을 독립 작업공간에 풀고, 공개 장 전체의 재렌더링 바이트 일치·클립보드 복사·검토 게이트·본문 보존을 검사한다. 새 2개 장을 생성하고 실제 브라우저에서 전체 생성 버튼을 누른다. 모델 응답만 합성 PCM으로 대체하며, WAV·독백 DSP·실제 lamejs MP3 인코딩·ZIP CRC·색인·다운로드 이벤트는 실제 코드로 검증한다. 일시 실패 후 재시도 성공, 영구 실패 후 PARTIAL ZIP, 캐시 재사용, 버튼 재활성화도 검사한다. 외부 모델 요청은 차단·대체하므로 API 키나 유료 호출은 없다. 결과는 NEW_EMPTY_TEST_DIR/SMOKE_REPORT.json에 저장한다.
+
+공개 스킬의 `verification/CANVAS_ZIP_SMOKE.json`은 29장 공개 HTML을 새로 내려받아 실행한 결과다. 원문·실제 음성·책 HTML은 스킬에 포함하지 않는다. 청취 품질과 실제 Gemini Canvas 호스트의 지원 여부는 이 테스트로 확인할 수 없다.
