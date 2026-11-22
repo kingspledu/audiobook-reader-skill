@@ -7,11 +7,15 @@ async function verify(dir){
  assert.equal(new Set(allRows.map(x=>x.filename.toLowerCase())).size,allRows.length);
  for(const file of htmls){
   const html=fs.readFileSync(path.join(dir,file),'utf8');
-  assert(!/__EPISODE_JSON__|__FILE_STEM__|__TITLE_HTML__/.test(html),'Unfilled tokens');
   const scripts=[...html.matchAll(/<script[^>]*>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean);
   scripts.forEach(s=>new vm.Script(s));
   const js=scripts.find(s=>s.includes('const originalEpisode ='));
   const episode=JSON.parse(js.match(/const originalEpisode = (.*?);\s*const originalStory =/s)[1]);
+  const literal=js.match(/const originalEpisode = (.*?);\s*const originalStory =/s)[1];
+  const template=fs.readFileSync(path.join(__dirname,'../assets/canvas-template.html'),'utf8');
+  const values={__EPISODE_JSON__:literal,__FILE_STEM__:file.replace('_GEMINI_CANVAS_TTS.html',''),__TITLE_HTML__:html.match(/<title>(.*?)<\/title>/s)[1]};
+  const rendered=template.replace(/__EPISODE_JSON__|__FILE_STEM__|__TITLE_HTML__/g,key=>values[key]);
+  assert.equal(rendered.replace(/\r\n/g,'\n'),html.replace(/\r\n/g,'\n'),'Canonical template mismatch');
   const sidecar=JSON.parse(fs.readFileSync(path.join(dir,file.replace('_GEMINI_CANVAS_TTS.html','_SCRIPT.json')),'utf8'));
   assert.deepStrictEqual(episode,sidecar);
   const turns=episode.scenes.flatMap(s=>s.segments);

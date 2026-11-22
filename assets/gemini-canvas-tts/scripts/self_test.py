@@ -12,7 +12,7 @@ with tempfile.TemporaryDirectory() as temp:
     book=copy.deepcopy(example)
     book['title']='다른 작품 <테스트>'
     book['prefix']='SECOND'
-    book['chapters'][0]['segments'][0]['text']='원문 보존: </script> & 한글\n줄바꿈도 남는다.'
+    book['chapters'][0]['segments'][0]['text']='원문 보존: </script> & 한글\n줄바꿈과 __FILE_STEM__ __TITLE_HTML__ __EPISODE_JSON__도 남는다.'
     book['chapters'].append(copy.deepcopy(book['chapters'][0]))
     book['chapters'][1]['number']=2
     index=generate(book,out)
