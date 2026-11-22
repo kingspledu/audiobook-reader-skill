@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "fresh_generated_volumes": 3,
+  "vocab_slide_close_escape": true,
+  "context_meaning": true,
+  "progress": true,
+  "paragraph_position_resume": true,
+  "character_page_and_links": true,
+  "actual_book_assets_included": false
+}

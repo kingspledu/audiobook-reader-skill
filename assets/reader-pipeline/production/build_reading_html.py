@@ -50,9 +50,14 @@ def main():
   toc=''.join(f'<a href="#chapter-{n:03}">Chapter {n}</a>' for n,_ in chapters)
   if not chapters:toc='<span>아직 본문이 없는 권입니다.</span>'
   body=Template((template/'index.html').read_text('utf8')).substitute(story_id=e(data['book_id']+f'-volume-{vol}'),title=e(data['title']),description=f'Volume {vol}',toc=toc,volumes=' '.join(f'<a href="../volume-{v}/">Volume {v}</a>' for v in groups),chapters=''.join(content for _,content in chapters),vocabulary=json.dumps(vocabulary,ensure_ascii=False).replace('<','\\u003c'))
+  if data.get('characters'):body=body.replace('<nav>'+ ' '.join(f'<a href="../volume-{v}/">Volume {v}</a>' for v in groups)+'</nav>','<nav>'+ ' '.join(f'<a href="../volume-{v}/">Volume {v}</a>' for v in groups)+' <a href="../characters/">캐릭터 시트</a></nav>')
   (folder/'index.html').write_text(body,encoding='utf8')
   (folder/'sw.js').write_text("self.addEventListener('fetch',()=>{});",encoding='utf8')
   (folder/'manifest.webmanifest').write_text(json.dumps({'id':data['book_id']+f'-{vol}','name':data['title'],'short_name':data['title'][:20],'start_url':'./','scope':'./','display':'standalone','icons':[{'src':'assets/app-icon-192.png','sizes':'192x192','type':'image/png'},{'src':'assets/app-icon-512.png','sizes':'512x512','type':'image/png'}]}),encoding='utf8')
  (out/'.nojekyll').touch();(out/'index.html').write_text('<!doctype html><meta charset="utf-8"><title>'+e(data['title'])+'</title><a href="volume-1/">Open reader</a>',encoding='utf8')
+ if data.get('characters'):
+  from build_character_sheets import build
+  build(data,assetroot,out/'characters')
+  with (out/'index.html').open('a',encoding='utf8') as stream:stream.write(' <a href="characters/">캐릭터 시트</a>')
  print(json.dumps({'reading_html_created_first':True,'chapters':len(numbers),'sentences':sentence_total,'volumes':3,'input':str(source),'output':str(out)}))
 if __name__=='__main__':main()

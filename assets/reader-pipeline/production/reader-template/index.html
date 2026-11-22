@@ -11,12 +11,14 @@
  <meta name="apple-mobile-web-app-capable" content="yes">
 </head>
 <body>
+ <div id="reading-progress" class="reading-progress" aria-hidden="true"></div>
  <a class="skip" href="#reading">본문으로 이동</a>
  <header class="floating-reader" id="floating-reader">
   <details id="chapter-menu" class="chapter-menu"><summary>목차</summary><nav>$toc</nav></details>
   <label>글자 <input id="font-size" type="range" min="14" max="50" value="19"><output id="font-value">19pt</output></label>
   <button id="theme" type="button" aria-pressed="false">테마</button>
   <button id="install-app" type="button">앱 설치</button>
+  <a id="resume-reading" hidden>이어 읽기</a>
  </header>
  <main class="shell" id="reading"><header class="book-intro"><h1>$title</h1><p>$description</p><nav>$volumes</nav></header>
   <article>$chapters</article>
