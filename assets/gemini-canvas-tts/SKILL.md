@@ -20,7 +20,7 @@ description: 원문이나 각색 원고를 Gemini Canvas용 장별 드라마 TTS
 1. [제작·연기·추출 절차](references/workflow.md)를 읽고 낭독 대상, 장, 장면, 화자, 본문을 정리한다.
 2. [입력 스키마와 파일명](references/input-and-index.md)에 따라 book JSON을 만든다. 재현 가능한 최소 예시는 `assets/example-book.json`이다. 장마다 narration / dialogue / monologue를 구분하고 감정·속도·쉼·비언어 연기를 작성한다.
 3. [모델·음성·감정 연기 지침](references/model-and-voices.md)을 읽고 구간마다 지속 감정과 순간 효과를 분리한다. 독백은 가까운 사람에게 나직하게 말하듯 **정상 발성**으로 생성한다. 속삭임·과한 숨소리를 피한다. 생성 음성은 원음으로 요청하고, 독백에만 승인된 짧은 에코·리버브를 후처리한다. 나레이션과 대사는 원음이다. 상세 값은 [오디오·Canvas 운영](references/runtime-and-download.md).
-4. 제공된 실제 HTML 템플릿을 사용해 생성한다. 여러 정규식 치환을 작품마다 새로 만들지 않는다.
+4. `scripts/copy_site.py`의 공통 렌더러와 `assets/canvas-template.html`로 생성한다. `build.py`는 장별 HTML과 함께 `output/code-copy/` 코드 복사 웹사이트도 만든다. 사이트용 생성기를 따로 만들지 않는다. segment.review의 attribution/classification/performance가 confirmed이고 evidence에 실제 검토 근거가 있어야 음성 생성할 수 있다. TXT 입력은 검토 전 초안이며 자동 확정하지 않는다.
 
 ```shell
 python scripts/build.py assets/example-book.json --out output
@@ -28,7 +28,7 @@ python scripts/build.py source.txt --prefix MYBOOK --title "작품명" --out out
 ```
 
 5. `node scripts/verify.cjs output`으로 JS 문법, 임베디드 대본/JSON 일치, 파일명 중복과 본문 SHA, 배역·효과 경로, 독백 DSP를 검증한다. `python scripts/self_test.py`는 다른 입력의 보존 및 누락 배역 거부를 시험한다.
-6. 사용자에게 HTML, 대본 JSON, 색인 JSON/CSV를 전달한다. Canvas에 HTML 전체를 올려 음성 생성·미리듣기 1개 → 수동 WAV 저장 → 필요하면 전체 생성 순으로 시험한다. 실패하면 [다운로드 진단](references/runtime-and-download.md)의 단계별 분류로 확인한다.
+6. `python scripts/verify_copy_site.py output/code-copy`로 실제 브라우저 복사와 공통 렌더러 일치를 확인한다(Playwright 필요). 사용자에게 `code-copy/` 웹사이트, HTML, 대본 JSON, 색인 JSON/CSV를 전달한다. 사이트에서 장 선택 → 코드 복사 → Gemini Canvas에 붙여 넣기 → **전체 생성 후 MP3 ZIP 다운로드** 순서로 사용한다. `code-copy/` 전체를 지정 경로에 배포하며 manifest의 크기·SHA-256을 공개 파일과 재대조한다. 실패하면 [다운로드 진단](references/runtime-and-download.md)을 따른다. 실제 생성·청취 시험 여부는 따로 보고한다.
 7. 사용자가 받은 파일을 정리하라고 하면 색인과 `.verified.json`으로 장·장면·화자·본문 지문을 맞춘다. `(1)` 파일, 다른 장·버전, 누락·중복을 구분하고 검증되지 않은 파일을 임의 교체하지 않는다. 공개 배포는 요청된 저장소·범위에서만 수행한다.
 
 ## 포함 자산

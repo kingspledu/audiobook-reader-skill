@@ -44,7 +44,15 @@ async function verify(dir){
   assert(start>=0);let body=js.slice(start,js.indexOf('function currentVoice',start));body=body.slice(0,body.lastIndexOf('});')+3);
   let handler,called=0;const status={textContent:'',classList:{remove(){},add(){}}};
   const ctx={batchProcessBtn:{addEventListener:(n,f)=>handler=f},batchRunning:false,activeRequests:0,folderChecking:false,turns:[{filename:'TEST.wav',speaker:'Narrator',voice:'Charon'}],directoryHandle:null,retrySelection:null,downloadStates:[{requested:false,failed:false,voice:null}],hostVoiceSelect:{value:'Charon'},batchStatus:status,lockControls(){},previewAudio:null,progressBarContainer:status,progressBar:{style:{}},document:{getElementById:()=>({scrollIntoView(){}})},sentenceHandlers:[async()=>{called++;return 'blob:test'}],setTimeout:f=>f(),showMessage:m=>{throw Error(m)}};
+  ctx.fileEntries=[{getUrl:()=>null}];ctx.performance={now:()=>0};
   vm.createContext(ctx);vm.runInContext(body,ctx);await handler();assert.equal(called,1);
+  const promptBody=js.slice(js.indexOf('function makePrompt('),js.indexOf('function makePrompt(')+js.slice(js.indexOf('function makePrompt(')).indexOf('\n        }')+10);
+  const pctx={turns,originalEpisode:episode};vm.createContext(pctx);vm.runInContext(promptBody+';this.prompt=makePrompt;',pctx);
+  for(let i=0;i<turns.length;i++){
+   const turn=turns[i],ready=turn.review&&['attribution','classification','performance'].every(k=>turn.review[k]==='confirmed')&&turn.review.evidence?.trim();
+   if(ready){const prompt=pctx.prompt(i);assert(prompt.endsWith(turn.text));for(const value of Object.values(turn.performance.design||{}))assert(prompt.includes(value),'Displayed direction missing from prompt');}
+   else assert.throws(()=>pctx.prompt(i),/검토|미확정/,'Unreviewed draft must be blocked');
+  }
   console.log('PASS',file,turns.length,'segments; syntax, index, DSP, mocked batch');
  }
  console.log('Actual generation/listening/Canvas download: NOT tested');

@@ -362,6 +362,8 @@ const apiKey = "";
         }
         function makePrompt(index) {
             const turn=turns[index],p=turn.performance;
+            if (!turn.review || ['attribution','classification','performance'].some(k=>turn.review[k]!=='confirmed') || !turn.review.evidence?.trim() || /^(pending|unresolved|unknown|placeholder|tbd)(?:[_\s:-]|$)/i.test(turn.cast_id)) throw new Error('대본 검토 정보가 없거나 미확정 화자입니다. 원문 문맥과 배역을 수정한 검증 완료 HTML을 사용하세요.');
+            if (!turn.voice || originalEpisode.voices[turn.speaker]!==turn.voice || !p.character_persona) throw new Error('고정 배역 목소리 또는 페르소나가 일치하지 않습니다.');
             return `드라마 오디오북. 낭독 언어: ${originalEpisode.language}. 청자에게 친절하고 선명하게. 화자: ${turn.speaker}. 목소리 정체성 고정. 전화 효과 없음.
 모델: ${turn.model}; 배역표 지문: ${turn.cast_sha256}; 고정 음색: ${turn.voice}; 배역 ID: ${turn.cast_id}; 발화 종류: ${turn.kind}.
 배역 페르소나: ${p.character_persona}
@@ -369,6 +371,12 @@ const apiKey = "";
 감정: ${p.emotion}; 강도 ${p.intensity}; 속도 ${p.pace}; 발성 ${p.delivery}.
 마이크 거리와 친밀감: ${p.mic_direction}
 연기: ${p.acting_notes}
+발화 대상과 목적: ${p.design?.addressee_intention || p.acting_notes}
+겉감정과 속마음: ${p.design?.outer_inner || p.emotion}
+감정 전환 지점: ${p.design?.pivot || '명시된 전환 없음'}
+속도·음량·강세·말끝·멈춤: ${p.design?.prosody || p.pace}
+비언어 위치·횟수·강도: ${p.design?.nonverbal || p.nonverbal}
+다음 문장으로 이어지는 감정·호흡: ${p.design?.continuation || '다음 문장으로 자연스럽게 연결'}
 비언어 연기: ${p.nonverbal}
 기침/과잉 연기: ${p.cough_rule}
 앞 구간(읽지 않음): ${turns[index-1]?.text||'시작'}
@@ -398,6 +406,12 @@ ${turn.text}`;
                 const label = document.createElement('div'); label.className = 'text-xs font-semibold text-blue-600';
                 label.textContent = `${turn.filename} · ${turn.speaker} · ${false?'전화 음질':'스튜디오 음질'} · ${turn.phase} · ${turn.performance.emotion || 'neutral'} · 쉼 ${turn.performance.pause_after_ms || 0}ms`;
                 const text = document.createElement('p'); text.textContent = turn.text;
+                const guide = document.createElement('details'); guide.className='acting-guide';
+                const summary = document.createElement('summary'); summary.textContent='연기 지침 보기'; guide.append(summary);
+                const guideBody = document.createElement('div'); guideBody.className='text-sm text-gray-700 whitespace-pre-wrap';
+                const d = turn.performance.design || {};
+                guideBody.textContent = `발화 목적: ${d.addressee_intention || '본문의 상황을 다음 문장으로 연결'}\n겉감정·속마음: ${d.outer_inner || turn.performance.emotion || ''}\n감정 전환: ${d.pivot || '명시된 전환 없음'}\n속도·강세·말끝: ${d.prosody || turn.performance.pace || ''}\n멈춤: ${turn.performance.pause_after_ms || 0}ms\n비언어 표현: ${d.nonverbal || turn.performance.nonverbal || '추가 표현 없음'}\n다음 호흡: ${d.continuation || '다음 문장으로 자연스럽게 연결'}`;
+                guide.append(guideBody);
                 const actions = document.createElement('div'); actions.className = 'flex gap-3 items-center';
                 const play = document.createElement('button'); play.className = 'play-btn bg-blue-50 text-blue-700 px-4 py-2 rounded-lg'; play.textContent = '생성 / 재생';
                 const download = document.createElement('a'); download.className = 'hidden bg-green-50 text-green-700 px-4 py-2 rounded-lg'; download.textContent = 'WAV 저장'; download.download = turn.filename; download.target = '_blank'; download.rel = 'noopener';
@@ -406,12 +420,14 @@ ${turn.text}`;
                 downloadStates.push(state);
                 const retry = document.createElement('button');
                 retry.className = 'retry-btn bg-amber-50 text-amber-800 px-3 py-2 rounded-lg text-sm';
-                retry.textContent = '다운로드 안 됨';
-                retry.title = '실제로 저장되지 않은 파일을 다음 일괄 저장 대상으로 지정합니다.';
+                retry.textContent = '다시 생성';
+                retry.title = '이 구간의 보관 음성을 지우고 다음 생성 대상으로 지정합니다. 기존에 저장한 파일은 삭제하지 않습니다.';
                 retry.addEventListener('click', () => {
                     if (batchRunning || activeRequests) return;
                     state.requested = false; state.verified = false; state.reason = '사용자가 미저장으로 지정';
-                    status.textContent = '재다운로드 대상 · 위 일괄 저장 버튼으로 다시 저장';
+                    if (audioUrl) URL.revokeObjectURL(audioUrl);
+                    audioUrl = null; cachedVoice = null; download.classList.add('hidden');
+                    status.textContent = '재생성 대상 · 생성/재생 또는 전체 생성으로 다시 생성';
                 });
                 download.addEventListener('click', event => {
                     if (directoryHandle && !readOnlyFolder) {
@@ -423,7 +439,7 @@ ${turn.text}`;
                     status.textContent = '다운로드 요청 완료 · 미저장 시 다운로드 안 됨 클릭';
                 });
                 actions.classList.add('flex-wrap');
-                actions.append(play,download,retry,status); card.append(label,text,actions); sentenceList.append(card);
+                actions.append(play,download,retry,status); card.append(label,text,guide,actions); sentenceList.append(card);
                 let audioUrl = null, cachedVoice = null;
                 const handler = async (autoDownload = false) => {
                     activeRequests++; lockControls();
@@ -439,12 +455,8 @@ ${turn.text}`;
                         }
                         status.textContent = state.requested ? `다운로드 요청 완료 · ${voice}` : `생성 완료 · ${voice}`;
                         if (autoDownload) {
-                            if (directoryHandle && !readOnlyFolder) {
-                                status.textContent = '폴더 저장 / 검증 중…';
-                                await saveVerified(index, audioUrl, voice);
-                                state.verified = state.requested = true; state.failed = false; state.reason = null;
-                                status.textContent = '폴더 저장 및 내용 검증 완료';
-                            } else { download.click(); status.textContent = '다운로드 요청 · 저장되지 않으면 WAV 저장을 직접 누르세요'; }
+                            state.requested = true;
+                            status.textContent = '브라우저 보관 완료 · MP3 ZIP으로 한 번 저장하세요';
                         }
                         else {
                             if (previewAudio) previewAudio.pause();
@@ -452,7 +464,7 @@ ${turn.text}`;
                             previewAudio.play().catch(() => { status.textContent = '음성 생성 완료 · WAV 저장 가능'; });
                         }
                         return audioUrl;
-                    } catch (error) { state.failed = true; state.requested = false; state.reason = error.message; status.textContent = '실패 · 재시도 가능'; showMessage(error.message); return null; }
+                    } catch (error) { state.failed = true; state.requested = false; state.reason = error.message; status.textContent = '실패 · 계속 진행 가능'; if (!batchRunning) showMessage(error.message); return null; }
                     finally { activeRequests--; lockControls(); }
                 };
                 play.addEventListener('click', () => { if (!batchRunning && !activeRequests) handler(false); });
@@ -462,34 +474,42 @@ ${turn.text}`;
         }
         batchProcessBtn.addEventListener('click', async () => {
             if (batchRunning || activeRequests || folderChecking || !turns.length) return;
-            if (directoryHandle) { try { await verifyDirectory(); } catch(error) { showMessage(error.message); return; } }
             const targets = turns.map((turn,index) => index).filter(index => {
                 if (retrySelection) return retrySelection.has(index);
                 const state = downloadStates[index];
                 const voice = turns[index].voice || hostVoiceSelect.value;
-                return (directoryHandle ? !state.verified : !state.requested) || state.failed || state.voice !== voice;
+                return !fileEntries[index]?.getUrl() || state.failed || state.voice !== voice;
             });
             batchStatus.classList.remove('hidden');
             if (!targets.length) {
-                batchStatus.textContent = '모든 항목의 다운로드를 요청했습니다. 저장되지 않은 파일은 다운로드 안 됨으로 지정하세요.';
+                batchStatus.textContent = '모든 음성이 브라우저에 보관돼 있습니다. MP3 ZIP으로 저장하세요.';
                 return;
             }
             batchRunning = true; lockControls();
             if (previewAudio) previewAudio.pause();
             progressBarContainer.classList.remove('hidden'); progressBar.style.width = '0%';
-            let completed = 0, failed = 0;
+            let completed = 0, failed = 0, startedAt = performance.now();
             try {
                 for (const index of targets) {
                     batchStatus.textContent = `재처리 대상 ${completed+1} / ${targets.length} · ${turns[index].filename} · ${turns[index].speaker}`;
                     document.getElementById(`card-${index}`).scrollIntoView({behavior:'smooth',block:'center'});
-                    const result = await sentenceHandlers[index](true);
+                    let result = null;
+                    for (let attempt=1; attempt<=3 && !result; attempt++) {
+                        batchStatus.textContent = `생성 ${completed+1}/${targets.length} · ${turns[index].filename} · 시도 ${attempt}/3`;
+                        result = await sentenceHandlers[index](true);
+                        if (!result && attempt < 3) await new Promise(resolve => setTimeout(resolve, 1200 * attempt));
+                    }
                     if (!result) failed++;
                     else if (retrySelection) retrySelection.delete(index);
                     completed++;
                     progressBar.style.width = `${completed/targets.length*100}%`;
+                    const elapsed = (performance.now()-startedAt)/1000;
+                    const remaining = completed ? Math.max(0, (elapsed/completed)*(targets.length-completed)) : 0;
+                    const fmt = s => s < 60 ? `${Math.ceil(s)}초` : `${Math.floor(s/60)}분 ${Math.ceil(s%60)}초`;
+                    batchStatus.textContent = `생성 ${completed}/${targets.length} · ${Math.round(completed/targets.length*100)}% · 경과 ${fmt(elapsed)} · 예상 남은 시간 ${fmt(remaining)} · 실패 ${failed}개`;
                     await new Promise(resolve => setTimeout(resolve,800));
                 }
-                batchStatus.textContent = `${directoryHandle ? '폴더 저장·검증' : '다운로드 요청'} ${completed-failed}개 · 실패 ${failed}개 · 기존 요청 완료 ${turns.length-targets.length}개 건너뜀`;
+                batchStatus.textContent = `브라우저 보관 ${completed-failed}개 · 실패 ${failed}개 · 기존 보관 ${turns.length-targets.length}개 건너뜀 · 창을 닫기 전에 MP3 ZIP 저장`;
             } finally { batchRunning = false; lockControls(); }
         });
 
@@ -823,6 +843,65 @@ ${turn.text}`;
         });
         promptInput.value = originalStory;
         processBtn.click();
-    </script>
+    // No audio leaves this browser during conversion or ZIP packaging.
+const zipPanel=document.createElement('section');
+zipPanel.style.cssText='margin:16px;padding:16px;border:2px solid #2563eb;border-radius:12px;background:#eff6ff';
+const singleModeStyle=document.createElement('style');
+singleModeStyle.textContent='button:not(#generatePackMp3Zip), a:not(#zipDownload), input, select, textarea, #controls, #resultsContainer > div:first-child { display:none !important; } #generatePackMp3Zip { display:inline-block !important; font-size:16px; font-weight:700; padding:12px 20px; border-radius:10px; background:#15803d; color:white; border:0; cursor:pointer; } #zipDownload:not([hidden]) { display:inline-block !important; } #zipProgress { margin-top:12px; font-weight:600; }';
+document.head.appendChild(singleModeStyle);
+zipPanel.innerHTML='<h2>전체 생성 → MP3 ZIP</h2><p>한 번 누르면 미생성 구간을 순서대로 생성하고, 브라우저에 보관한 뒤 MP3 ZIP으로 저장합니다.</p><button id="generatePackMp3Zip" type="button">전체 생성 후 MP3 ZIP 다운로드</button> <button id="packMp3Zip" type="button">생성된 음성만 ZIP</button> <button id="importZipWavs" type="button">기존 WAV 선택 → MP3 ZIP</button><input id="zipWavInput" type="file" accept=".wav,audio/wav" multiple hidden><p id="zipProgress" role="status"></p><a id="zipDownload" hidden>ZIP 저장</a>';
+document.body.prepend(zipPanel);
+const zipButton=document.getElementById('packMp3Zip'),generateZipButton=document.getElementById('generatePackMp3Zip'),zipImport=document.getElementById('importZipWavs'),zipProgress=document.getElementById('zipProgress');
+let zipBusy=false,zipResultUrl=null;
+function zipCrc32(bytes){let crc=0xffffffff;for(const b of bytes){crc^=b;for(let k=0;k<8;k++)crc=(crc>>>1)^((crc&1)?0xedb88320:0)}return (crc^0xffffffff)>>>0}
+function zipRecord(size,values){const bytes=new Uint8Array(size),v=new DataView(bytes.buffer);for(const [offset,value,width] of values){if(width===2)v.setUint16(offset,value,true);else v.setUint32(offset,value,true)}return bytes}
+async function makeStoredZip(files){
+ const chunks=[],central=[];let offset=0,centralSize=0;
+ for(const file of files){const name=new TextEncoder().encode(file.name),data=new Uint8Array(await file.blob.arrayBuffer());if(data.length>0xffffffff)throw new Error('ZIP32 파일 크기 초과');const crc=zipCrc32(data);
+  const local=zipRecord(30,[[0,0x04034b50,4],[4,20,2],[6,0x800,2],[8,0,2],[14,crc,4],[18,data.length,4],[22,data.length,4],[26,name.length,2]]);
+  chunks.push(local,name,data);
+  const header=zipRecord(46,[[0,0x02014b50,4],[4,20,2],[6,20,2],[8,0x800,2],[10,0,2],[16,crc,4],[20,data.length,4],[24,data.length,4],[28,name.length,2],[42,offset,4]]);
+  central.push(header,name);centralSize+=header.length+name.length;offset+=local.length+name.length+data.length;
+ }
+ if(offset+centralSize>0xffffffff||files.length>65535)throw new Error('ZIP32 한도 초과; 더 적은 파일로 나누세요');
+ return new Blob([...chunks,...central,zipRecord(22,[[0,0x06054b50,4],[8,files.length,2],[10,files.length,2],[12,centralSize,4],[16,offset,4]])],{type:'application/zip'});
+}
+async function packageMp3Zip(imported=null){
+ if(zipBusy||batchRunning||activeRequests||mergingAudio||folderChecking)return showMessage('현재 작업이 끝난 뒤 ZIP 저장을 눌러 주세요.');
+ zipBusy=true;zipButton.disabled=zipImport.disabled=true;mergingAudio=true;lockControls();let context;
+ try{
+  const inputs=[],missing=[];
+  if(imported){const seen=new Set();for(const file of imported){if(!/\.wav$/i.test(file.name))continue;if(seen.has(file.name))throw new Error('중복 파일명: '+file.name);seen.add(file.name);const i=turns.findIndex(t=>t.filename===file.name);if(i<0)throw new Error('현재 장 색인과 일치하지 않는 파일: '+file.name);inputs.push({file,index:i})}inputs.sort((a,b)=>a.index-b.index)}
+  else{for(let i=0;i<fileEntries.length;i++){const url=fileEntries[i].getUrl();if(!url){missing.push(turns[i].filename);continue}const response=await fetch(url);if(!response.ok)throw new Error('브라우저 보관 음성을 읽을 수 없습니다');inputs.push({file:new File([await response.blob()],turns[i].filename,{type:'audio/wav'}),index:i})}}
+  if(!inputs.length)throw new Error('변환할 음성이 없습니다. 먼저 음성을 생성하거나 현재 장 WAV를 선택하세요.');
+  const library=await loadMp3Encoder();context=new (window.AudioContext||window.webkitAudioContext)({sampleRate:44100});const files=[],rows=[];
+  const bitrate=Number(document.getElementById('mp3Bitrate').value)||128;
+  const conversionStarted=performance.now();
+  for(let n=0;n<inputs.length;n++){const input=inputs[n],turn=turns[input.index];const elapsed=(performance.now()-conversionStarted)/1000;const eta=n?Math.max(0,(elapsed/n)*(inputs.length-n)):0;const fmt=s=>s<60?`${Math.ceil(s)}초`:`${Math.floor(s/60)}분 ${Math.ceil(s%60)}초`;zipProgress.textContent=`MP3 변환 ${n+1}/${inputs.length} · ${Math.round((n+1)/inputs.length*100)}% · 예상 남은 시간 ${fmt(eta)} · ${input.file.name}`;
+   const encoder=new library.Mp3Encoder(1,44100,bitrate);
+   const blob=await encodeMergedWavs([input.file],encoder,context,()=>{});if(!blob.size)throw new Error('빈 MP3: '+input.file.name);
+   const name=input.file.name.replace(/\.wav$/i,'.mp3');files.push({name,blob});rows.push({order:input.index,filename:name,speaker:turn.speaker,voice:turn.voice,kind:turn.kind,text_sha256:await sha256(new TextEncoder().encode(turn.text)),text:turn.text,bitrate_kbps:bitrate,source:imported?'user_selected_wav_unverified_audio_content':'browser_generated_cache'});
+  }
+  const included=new Set(inputs.map(x=>x.index));for(let i=0;i<turns.length;i++)if(!included.has(i)&&!missing.includes(turns[i].filename))missing.push(turns[i].filename);
+  const stem=turns[0].filename.replace(/_\d{4}_.*$/,'');
+  const manifest={schema:'mp3-zip-index-1',chapter:originalEpisode.chapter,complete:missing.length===0,missing,segments:rows,audioListeningVerified:false};
+  files.push({name:stem+'_MP3_INDEX.json',blob:new Blob([JSON.stringify(manifest,null,2)],{type:'application/json'})});
+  const escapeCsv=v=>'"'+String(v??'').replaceAll('"','""')+'"';const keys=['order','filename','speaker','voice','kind','text_sha256','text','bitrate_kbps'];
+  files.push({name:stem+'_MP3_INDEX.csv',blob:new Blob(['\ufeff'+keys.join(',')+'\r\n'+rows.map(r=>keys.map(k=>escapeCsv(r[k])).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'})});
+  zipProgress.textContent='ZIP 作成中…';const zip=await makeStoredZip(files);if(zipResultUrl)URL.revokeObjectURL(zipResultUrl);zipResultUrl=URL.createObjectURL(zip);
+  const link=document.getElementById('zipDownload');link.href=zipResultUrl;link.download=stem+(missing.length?'_PARTIAL':'')+'_MP3.zip';link.hidden=false;link.textContent=`ZIP 保存 (${rows.length} MP3, ${(zip.size/1048576).toFixed(1)} MB)`;link.click();
+  zipProgress.textContent=`MP3 ${rows.length}개를 ZIP 하나로 묶었습니다. ${missing.length?'미생성 '+missing.length+'개: PARTIAL ZIP입니다.':'현재 장 전체 포함.'} 자동 저장이 안 되면 ZIP 링크를 직접 누르세요. 저장 완료 자체는 확인하지 못합니다.`;
+ }catch(e){zipProgress.textContent='ZIP 실패: '+e.message;showMessage(e.message)}finally{if(context)await context.close().catch(()=>{});zipBusy=false;mergingAudio=false;lockControls();zipButton.disabled=zipImport.disabled=false}
+}
+async function generateThenPackage(){
+ if(zipBusy||batchRunning||activeRequests)return;
+ generateZipButton.disabled=true;zipProgress.textContent='전체 구간 순차 생성 중…';
+ batchProcessBtn.click();
+ while(batchRunning||activeRequests) await new Promise(r=>setTimeout(r,500));
+ try { await packageMp3Zip(); } finally { generateZipButton.disabled=false; }
+}
+zipButton.onclick=()=>packageMp3Zip();generateZipButton.onclick=()=>generateThenPackage().catch(e=>{zipProgress.textContent='전체 생성 실패: '+e.message;showMessage(e.message)});zipImport.onclick=()=>document.getElementById('zipWavInput').click();document.getElementById('zipWavInput').onchange=e=>{const files=Array.from(e.target.files);e.target.value='';if(files.length)packageMp3Zip(files)};
+
+</script>
 </body>
 </html>

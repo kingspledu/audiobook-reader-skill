@@ -11,7 +11,7 @@ description: 원문에서 Gemini Canvas용 드라마 TTS HTML을 제작하고 �
 
 1. `python scripts/init_workspace.py --out PROJECT_ROOT`로 별도 작업공간에 소스와 템플릿을 푼다. 스킬 폴더에서 책 파일을 만들지 않는다.
 2. 원문을 book.json의 chapters/paragraphs/sentences에 넣고 `python production/build_reading_html.py --input book.json --output story-reader`로 기본 HTML을 생성한다. 요약하거나 문단을 임의 변경하지 않는다.
-3. TTS를 새로 만들면 [포함된 TTS 스킬](assets/gemini-canvas-tts/SKILL.md)과 연결된 references를 읽는다. 고정 배역·성우·문장별 연기 JSON으로 `python tts/scripts/build.py ... --out output`을 실행해 Canvas용 HTML·대본·JSON/CSV 색인을 만든다. 키 입력 없는 Canvas 호스트만 사용하며 실제 지원 여부를 확인한다.
+3. TTS를 새로 만들면 [코드 복사 사이트 제작](references/TTS_CODE_COPY_SITE.md)과 [포함된 TTS 스킬](assets/gemini-canvas-tts/SKILL.md)을 읽는다. 고정 배역·성우·문장별 연기 JSON으로 `python tts/scripts/build.py ... --out output`을 실행한다. 최종 전달물은 장별 Canvas HTML·대본·JSON/CSV 색인과 **실제 HTML 코드를 복사하는 `output/code-copy/` 웹사이트**다. 이 폴더를 통째로 배포한다. 키 입력 없는 Canvas 호스트만 사용하며 실제 지원 여부를 확인한다.
 4. 이미 MP3가 있으면 생성 단계를 건너뛴다. 색인 변환·WAV→MP3는 [입출력 연결](references/START_HERE.md)을 따른다.
 5. [전체 재현 매뉴얼](references/AUDIOBOOK_READER_TEMPLATE_KO.md)의 모델·초기 음량 준비 후 `python production/run_pipeline.py`를 실행한다.
 6. [검증 범위](references/IMPROVEMENT_EXECUTION_REPORT_KO.md)에 따라 자동 검사와 실제 청취·휴대폰 잠금 검증을 구분한다.
@@ -24,6 +24,7 @@ description: 원문에서 Gemini Canvas용 드라마 TTS HTML을 제작하고 �
 - 실험 배너·장면 번호·시험 문구를 독서 화면에 넣지 않는다. 필요한 실패 안내는 유지.
 - 오프라인은 파일 검증 후 완료 표시. 삭제는 해당 책 자료에만 적용.
 - 공개 배포는 요청된 범위에만 수행. 실제 책 원문·음성·개인 경로·키는 공개 스킬에 넣지 않는다.
+- 복사 사이트와 Canvas HTML은 `copy_site.render_episode()` 및 단일 `canvas-template.html`로 생성한다. 별도 사이트용 생성기를 만들거나 HTML을 수작업 수정하지 않는다. 파일 SHA-256·원문/배역/연기 보존·브라우저 복사 검증이 모두 통과해야 배포한다. 기존 원고를 옮길 때 원문이나 검토 상태를 임의 변경하지 않는다.
 
 ## 현재 프로필 제한
 

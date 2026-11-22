@@ -2,10 +2,10 @@
 import argparse
 import csv
 import hashlib
-import html
 import json
 import re
 from pathlib import Path
+from copy_site import render_episode, build_copy_site
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -25,7 +25,6 @@ def generate(book, output):
     cast = book['cast']
     cast_hash = digest(json.dumps(cast, ensure_ascii=False, sort_keys=True))
     model = book.get('model', 'gemini-2.5-flash-preview-tts')
-    template = (ROOT/'assets/canvas-template.html').read_text(encoding='utf-8')
     rows, used, chapters_seen = [], set(), set()
     output = Path(output); output.mkdir(parents=True, exist_ok=True)
     for chapter in book['chapters']:
@@ -71,6 +70,8 @@ def generate(book, output):
                         kind=role, cast_id=cid, text=text, scene_id=scene, filename=filename,
                         voice=profile['voice'], model=model, cast_revision=revision,
                         cast_sha256=cast_hash, performance=performance)
+            if 'review' in segment:
+                unit['review'] = segment['review']
             units.append(unit)
             rows.append(dict(chapter=number, order=order, scene_id=scene, segment_id=unit['id'],
                              speaker=unit['speaker'], kind=role, cast_id=cid, filename=filename,
@@ -84,15 +85,15 @@ def generate(book, output):
                        cast_revision=revision, cast_sha256=cast_hash,
                        voices={p.get('name', c):p['voice'] for c,p in cast.items()},
                        scenes=[dict(scene_id=f'C{number:02}', title=chapter['title'], segments=units)])
-        encoded = json.dumps(episode, ensure_ascii=False).replace('<', '\\u003c').replace('\u2028','\\u2028').replace('\u2029','\\u2029')
-        page = template.replace('__EPISODE_JSON__', encoded).replace('__FILE_STEM__', stem).replace('__TITLE_HTML__', html.escape(book['title']+' · '+chapter['title']))
-        (output/f'{stem}_GEMINI_CANVAS_TTS.html').write_text(page, encoding='utf-8')
+        page = render_episode(episode, stem, book['title']+' · '+chapter['title'])
+        (output/f'{stem}_GEMINI_CANVAS_TTS.html').write_bytes(page.encode('utf-8'))
         (output/f'{stem}_SCRIPT.json').write_text(json.dumps(episode,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     index = dict(schema='audio-index-1', prefix=prefix, revision=revision, segments=rows,
                  full_mp3=[f'{prefix}_C{c:02}_{revision}_FULL.mp3' for c in sorted(chapters_seen)])
     (output/f'{prefix}_AUDIO_INDEX_{revision}.json').write_text(json.dumps(index,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     with (output/f'{prefix}_AUDIO_INDEX_{revision}.csv').open('w',encoding='utf-8-sig',newline='') as stream:
         writer=csv.DictWriter(stream,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
+    build_copy_site([output/f'{prefix}_C{c:02}_{revision}_GEMINI_CANVAS_TTS.html' for c in sorted(chapters_seen)], output/'code-copy', book['title']+' · TTS HTML 코드 복사')
     return index
 
 def main():
