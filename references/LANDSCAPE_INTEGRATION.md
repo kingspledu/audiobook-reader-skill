@@ -69,6 +69,8 @@ node --check production/landscape-reader.js
 | #theme, #install-app, #install-help | 테마·설치·전체화면 미지원 안내 |
 | .audiobook, .audio-progress input | 기존 오디오 패널과 탐색 입력 |
 | .offline-tools | 기존 다운로드·캐시 삭제 도구 |
+| #reader-layout-toggle | 가로모드 켜기·끄기, aria-pressed로 분할 상태 표시 |
+| #landscape-fullscreen | 전체모드 진입·종료, Fullscreen API 상태 표시 |
 
 스크립트는 기존 article을 #landscape-text-pane 안으로 이동시킨다. #landscape-art-stage에는 현재 그림만 표시한다. 숨긴 원래 figure는 본문 데이터로 남아 있으며 그림 파일을 재생성하지 않는다. 설정으로 옮기는 노드는 원래 자리에 주석 마커를 두고 세로 모드 복귀 시 복원한다. 어휘 버튼·이벤트·기존 재생기는 그대로 사용한다. 가로모드가 꺼져도 추가 컨테이너로 인해 기존 CSS 선택자가 깨지지 않는지 확인한다.
 
