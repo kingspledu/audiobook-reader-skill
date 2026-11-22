@@ -26,12 +26,12 @@
     "production/landscape-test/index.html": "e93877ab8fbaced61f15498d9ff613be377e50a7dc350092f5ba4afeda677077",
     "production/landscape-test/test.css": "a2c9edfba5f5ea0bceb5a85f07bdbb72da725159965ed6a4b3221f5b7a8b4ac2",
     "production/landscape-test/test.js": "8e0bdfa3f3feb3dd9a644c00df855dc8d0d8110f227cf467a29a9357a0244130",
-    "production/build_reading_html.py": "0b8dfe576d2df202005f9c22dab768836be9b66362056d06b2f44a4e5658f9f2",
+    "production/build_reading_html.py": "d982827369c6c53d4da764630285e2fd6c57d43b8d6d6e7bbdf4646ae4c77887",
     "production/smoke_template.py": "7870cd62b1ae5002282a9ee1a7908c9bbb066c697a4563a8e6fecf28f951ffe8",
-    "production/reader-template/app.js": "8c6a5453787465c810aa1ac2911ef77adb10b8297bd51d4601a7dbfce47b11d8",
+    "production/reader-template/app.js": "a3a3961914595439b903d1e133fc9e09c6ebb49d04a1fdc59a7704fa9f5e6e19",
     "production/reader-template/book.sample.json": "29c80d06a44bd4e5897f700abaac5836ab2354f9654fdea39b239dce15d9f1a6",
-    "production/reader-template/index.html": "420de3103e87d55d6aa995bf72a57f85d1c73449122de21729e972636cb1a7cc",
-    "production/reader-template/style.css": "78dad9a3f67d5d8c844dca03af9c09876c396711b3044ff716c9546eeeacb6b3",
+    "production/reader-template/index.html": "d648537deb337320f5c3a95dbc30da76c5cde8cfe24261fe7e139149c6e28369",
+    "production/reader-template/style.css": "dcf71ee03e3202fe7af39c004d230208263a1a435c04b12206e63d794b3a467b",
     "production/verify_template_smoke.cjs": "1730bb09619323f3c62f139ca7014a2aa2384c72c4e51d41a3fdd94878fc2efe",
     "production/cache_guard.py": "c8d38c7690a5b33d9dc0187bdbbf8565e0c271a9cf7ba294170f2bf0759fa3d5",
     "production/run_pipeline.py": "b91fad996937b7c007cf60ca94ee85cb166d6435b0579e05d219a6cf166cecb5",
@@ -44,7 +44,8 @@
     "production/landscape-test/manifest.webmanifest": "3cf6ddbc1a6c768ab0b4e715d97b398540ee2cfdcb5b84aad4ffeff4657d486d",
     "production/landscape-reader.js": "94962d36605208b12133e0c4ca2bfecd6157bbd9e7c531a8b7edfd6f48f9f5b7",
     "production/landscape-reader.css": "b85a33968f3f963b5827c6a56d7dcc984cb2d7db687befcad9c7d58d42a89d7d",
-    "production/install_landscape_reader.py": "1664df9ee67347a7f77d37dd11d4f56f9f8e4ec7efa6003d98da85c56a3fddac"
+    "production/install_landscape_reader.py": "1664df9ee67347a7f77d37dd11d4f56f9f8e4ec7efa6003d98da85c56a3fddac",
+    "production/reader-template/pwa.js": "33e077bd5525328c7f5c6712fdea877d265b0965195421fe800aec299af56050"
   },
   "dependencies": {
     "beautifulsoup4": "4.15.0",

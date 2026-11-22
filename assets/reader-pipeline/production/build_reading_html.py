@@ -45,13 +45,12 @@ def main():
   parts.append('</section>');groups[vol].append((n,''.join(parts)))
  for vol,chapters in groups.items():
   folder=out/f'volume-{vol}';(folder/'assets').mkdir(parents=True,exist_ok=True)
-  for name in ['style.css','app.js']:shutil.copyfile(template/name,folder/name)
+  for name in ['style.css','app.js','pwa.js']:shutil.copyfile(template/name,folder/name)
   for size in (192,512):make_icon(folder/f'assets/app-icon-{size}.png',size)
   toc=''.join(f'<a href="#chapter-{n:03}">Chapter {n}</a>' for n,_ in chapters)
   if not chapters:toc='<span>아직 본문이 없는 권입니다.</span>'
   body=Template((template/'index.html').read_text('utf8')).substitute(story_id=e(data['book_id']+f'-volume-{vol}'),title=e(data['title']),description=f'Volume {vol}',toc=toc,volumes=' '.join(f'<a href="../volume-{v}/">Volume {v}</a>' for v in groups),chapters=''.join(content for _,content in chapters),vocabulary=json.dumps(vocabulary,ensure_ascii=False).replace('<','\\u003c'))
   (folder/'index.html').write_text(body,encoding='utf8')
-  (folder/'pwa.js').write_text("if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{}));",encoding='utf8')
   (folder/'sw.js').write_text("self.addEventListener('fetch',()=>{});",encoding='utf8')
   (folder/'manifest.webmanifest').write_text(json.dumps({'id':data['book_id']+f'-{vol}','name':data['title'],'short_name':data['title'][:20],'start_url':'./','scope':'./','display':'standalone','icons':[{'src':'assets/app-icon-192.png','sizes':'192x192','type':'image/png'},{'src':'assets/app-icon-512.png','sizes':'512x512','type':'image/png'}]}),encoding='utf8')
  (out/'.nojekyll').touch();(out/'index.html').write_text('<!doctype html><meta charset="utf-8"><title>'+e(data['title'])+'</title><a href="volume-1/">Open reader</a>',encoding='utf8')

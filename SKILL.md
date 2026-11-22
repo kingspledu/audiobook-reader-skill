@@ -18,6 +18,8 @@ description: 원문에서 Gemini Canvas용 드라마 TTS HTML을 제작하고 �
 
 ## 제품 규격
 
+Whisper 노래방식 재생은 [타이밍→단어→문장 연결 규약](references/WHISPER_KARAOKE.md)을 먼저 읽는다. 원음 단어 시간·trim·장 offset을 혼동하지 말고 실제 근거가 없는 타이밍은 null로 둔다. [공개 읽기 사이트 기능 대응표](references/READER_FEATURE_PARITY.md)의 포함·간소화·미포함 항목을 확인하고 전체 기능이 동일하다고 추정하지 않는다.
+
 오디오북 가로 재생을 제작·수정할 때는 [구현 계약·명령·검증 행렬](references/LANDSCAPE_INTEGRATION.md)을 먼저 읽는다. **기본 읽기 페이지 전체에 공통 모듈을 설치**하며, 별도 시험 페이지만 만들고 완료하지 않는다. 태블릿 높이 제한을 두지 않고 가로모드/전체모드 수동 버튼을 제공한다. 기존 단일 재생기·문장 ID·개별 MP3를 유지한다.
 
 전체모드는 실제 브라우저 전체화면의 진입·종료이며 가로 배치와 독립적이다. 같은 문서의 전체화면 필수 절차를 따르고 `scripts/verify_fullscreen.py`로 실제 포함 모듈의 진입·종료·거부·미지원 안내를 검사한다. iOS 홈 화면 설치 안내와 API 성공을 구별한다.

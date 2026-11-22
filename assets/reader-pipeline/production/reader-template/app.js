@@ -1,6 +1,6 @@
 (()=>{'use strict';const $=id=>document.getElementById(id),key='reader-settings:'+document.documentElement.dataset.storyId;
 let saved={};try{saved=JSON.parse(localStorage.getItem(key)||'{}')}catch{}
-function apply(){const size=Number($('font-size').value);document.documentElement.style.setProperty('--read',size+'pt');$('font-value').value=size+'pt';$('theme').setAttribute('aria-pressed',String(document.body.classList.contains('dark')));try{localStorage.setItem(key,JSON.stringify({size,dark:document.body.classList.contains('dark')}))}catch{}}
+function apply(){const size=Number($('font-size').value);document.documentElement.style.setProperty('--read',size+'pt');document.documentElement.style.setProperty('--reading',size+'pt');$('font-value').value=size+'pt';$('theme').setAttribute('aria-pressed',String(document.body.classList.contains('dark')));try{localStorage.setItem(key,JSON.stringify({size,dark:document.body.classList.contains('dark')}))}catch{}}
 if(saved.size)$('font-size').value=Math.max(14,Math.min(50,saved.size));document.body.classList.toggle('dark',saved.dark===true);$('font-size').oninput=apply;$('theme').onclick=()=>{document.body.classList.toggle('dark');apply()};apply();
 const menu=$('chapter-menu');menu.addEventListener('click',e=>{if(e.target.closest('a'))menu.open=false});document.addEventListener('click',e=>{if(!menu.contains(e.target))menu.open=false});document.addEventListener('keydown',e=>{if(e.key==='Escape')menu.open=false});
 const words=JSON.parse($('vocabulary-data').textContent);let panel=null,active=null;

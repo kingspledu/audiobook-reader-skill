@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "real_audiobook_js": true,
+  "controlled_clock": true,
+  "trim_offset_word_boundaries": true,
+  "null_sentence_fallback": true,
+  "nested_vocab_preserved": true,
+  "vocab_click_does_not_seek": true,
+  "rate_change": true,
+  "text_preserved": true,
+  "actual_whisper_run": false,
+  "actual_audio_listened": false
+}

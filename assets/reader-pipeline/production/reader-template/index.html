@@ -16,10 +16,12 @@
   <details id="chapter-menu" class="chapter-menu"><summary>목차</summary><nav>$toc</nav></details>
   <label>글자 <input id="font-size" type="range" min="14" max="50" value="19"><output id="font-value">19pt</output></label>
   <button id="theme" type="button" aria-pressed="false">테마</button>
+  <button id="install-app" type="button">앱 설치</button>
  </header>
  <main class="shell" id="reading"><header class="book-intro"><h1>$title</h1><p>$description</p><nav>$volumes</nav></header>
   <article>$chapters</article>
  </main>
  <script type="application/json" id="vocabulary-data">$vocabulary</script>
+ <dialog id="install-help"><h2>앱으로 읽기</h2><p id="install-instructions"></p><button id="install-help-close" type="button">닫기</button></dialog>
  <script src="app.js" defer></script><script src="pwa.js" defer></script>
 </body></html>
