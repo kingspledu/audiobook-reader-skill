@@ -34,14 +34,17 @@
     "production/reader-template/style.css": "78dad9a3f67d5d8c844dca03af9c09876c396711b3044ff716c9546eeeacb6b3",
     "production/verify_template_smoke.cjs": "1730bb09619323f3c62f139ca7014a2aa2384c72c4e51d41a3fdd94878fc2efe",
     "production/cache_guard.py": "c8d38c7690a5b33d9dc0187bdbbf8565e0c271a9cf7ba294170f2bf0759fa3d5",
-    "production/run_pipeline.py": "230c4585cb16d8928c8765e704c35fc23557b0075cab171313d8e94a6ec09dc0",
+    "production/run_pipeline.py": "b91fad996937b7c007cf60ca94ee85cb166d6435b0579e05d219a6cf166cecb5",
     "production/lock_dependencies.py": "b699cc02e798c3dd70abc18b249358d147d367be86021ae2e01460508f7e8017",
     "production/verify_cache_pipeline.py": "0e0848346bd8a56b926dc2d237e98c0acf588356e287a7d314e97525107e8758",
     "production/verify_settings_invalidation.py": "20306feec57468d4fc48da9762cb93033bf3d13af3458896f9f3b8192f418e70",
     "docs/requirements-audiobook-lock.txt": "5fef9828474e9af641f5d3b94932493af5b0e20ab66af5a63b9200551aaa3652",
     "docs/AUDIOBOOK_READER_TEMPLATE_KO.md": "159938795ad4e7e68002b673ba1f237fe79e72b6423c4928e4f4aa32177bc8cc",
     "docs/requirements-audiobook-full-lock.txt": "47aa79a7f623bac9dea48e1f62ff27fc46048a6086058468c427ba902c5a1378",
-    "production/landscape-test/manifest.webmanifest": "3cf6ddbc1a6c768ab0b4e715d97b398540ee2cfdcb5b84aad4ffeff4657d486d"
+    "production/landscape-test/manifest.webmanifest": "3cf6ddbc1a6c768ab0b4e715d97b398540ee2cfdcb5b84aad4ffeff4657d486d",
+    "production/landscape-reader.js": "fa98362bc791530aa8d0b01859b85b3999ac94e0c131f304ffc32a5bd056057f",
+    "production/landscape-reader.css": "c1be850f4e62815371ebb984ba15c086e3983c95748c9b21a794f477d2c87a20",
+    "production/install_landscape_reader.py": "62c9a606863f877c7bfc829f5ead20b5310b834eaad4893aabbcf6e9295a179f"
   },
   "dependencies": {
     "beautifulsoup4": "4.15.0",

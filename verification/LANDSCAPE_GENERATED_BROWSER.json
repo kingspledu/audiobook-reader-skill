@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "newly_generated_fixture": true,
+  "volumes": [
+    {
+      "volume": 1,
+      "landscape": true,
+      "top": 32,
+      "bottom": 36,
+      "offline": true,
+      "max": "102",
+      "errors": []
+    },
+    {
+      "volume": 2,
+      "landscape": true,
+      "top": 32,
+      "bottom": 36,
+      "offline": true,
+      "max": "102",
+      "errors": []
+    },
+    {
+      "volume": 3,
+      "landscape": true,
+      "top": 32,
+      "bottom": 36,
+      "offline": true,
+      "max": "102",
+      "errors": []
+    }
+  ],
+  "physical_phone_tested": false
+}

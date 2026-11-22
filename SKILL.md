@@ -13,7 +13,7 @@ description: 원문에서 Gemini Canvas용 드라마 TTS HTML을 제작하고 �
 2. 원문을 book.json의 chapters/paragraphs/sentences에 넣고 `python production/build_reading_html.py --input book.json --output story-reader`로 기본 HTML을 생성한다. 요약하거나 문단을 임의 변경하지 않는다.
 3. TTS를 새로 만들면 [코드 복사 사이트 제작](references/TTS_CODE_COPY_SITE.md)과 [포함된 TTS 스킬](assets/gemini-canvas-tts/SKILL.md)을 읽는다. 고정 배역·성우·문장별 연기 JSON으로 `python tts/scripts/build.py ... --out output`을 실행한다. 최종 전달물은 장별 Canvas HTML·대본·JSON/CSV 색인과 **실제 HTML 코드를 복사하는 `output/code-copy/` 웹사이트**다. 이 폴더를 통째로 배포한다. 키 입력 없는 Canvas 호스트만 사용하며 실제 지원 여부를 확인한다.
 4. 이미 MP3가 있으면 생성 단계를 건너뛴다. 색인 변환·WAV→MP3는 [입출력 연결](references/START_HERE.md)을 따른다.
-5. [전체 재현 매뉴얼](references/AUDIOBOOK_READER_TEMPLATE_KO.md)의 모델·초기 음량 준비 후 `python production/run_pipeline.py`를 실행한다.
+5. [전체 재현 매뉴얼](references/AUDIOBOOK_READER_TEMPLATE_KO.md)의 모델·초기 음량 준비 후 `python production/run_pipeline.py`를 실행한다. [전체 본문 가로모드](references/LANDSCAPE_INTEGRATION.md)의 공통 모듈은 파이프라인 마지막에 설치된다. 별도 시험 페이지만으로 전체 적용 완료라고 보고하지 않는다.
 6. [검증 범위](references/IMPROVEMENT_EXECUTION_REPORT_KO.md)에 따라 자동 검사와 실제 청취·휴대폰 잠금 검증을 구분한다.
 
 ## 제품 규격

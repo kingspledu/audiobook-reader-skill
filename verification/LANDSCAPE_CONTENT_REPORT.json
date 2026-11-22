@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "volumes": [
+    {
+      "volume": 1,
+      "chapters": 10,
+      "sentences": 1475,
+      "text_and_ids_exact": true,
+      "vocabulary_exact": true,
+      "illustration_sources_exact": true
+    },
+    {
+      "volume": 2,
+      "chapters": 10,
+      "sentences": 1734,
+      "text_and_ids_exact": true,
+      "vocabulary_exact": true,
+      "illustration_sources_exact": true
+    },
+    {
+      "volume": 3,
+      "chapters": 9,
+      "sentences": 1243,
+      "text_and_ids_exact": true,
+      "vocabulary_exact": true,
+      "illustration_sources_exact": true
+    }
+  ],
+  "audio_files_untouched": true
+}

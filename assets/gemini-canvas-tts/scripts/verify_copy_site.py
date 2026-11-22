@@ -54,6 +54,9 @@ def verify(root, browser_path=None):
                 page.evaluate("document.querySelectorAll('#chapters button')[0].click();document.querySelectorAll('#chapters button')[1].click()")
                 page.wait_for_function("!document.getElementById('copy').disabled")
                 assert page.locator('#code').input_value()==expected[manifest['chapters'][1]['chapter']]
+            else:
+                page.locator('#chapters button').first.click()
+                page.wait_for_function("!document.getElementById('copy').disabled")
             # Clipboard denied: manual selection still contains exact HTML.
             page.evaluate("Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{throw Error('denied')}}});document.execCommand=()=>false")
             page.locator('#copy').click();page.wait_for_function("document.getElementById('status').textContent.includes('코드 전체가 선택')")
@@ -62,7 +65,7 @@ def verify(root, browser_path=None):
             browser.close()
     finally: server.shutdown();server.server_close()
     return dict(status='PASS',chapters=len(expected),render_bytes_exact=True,clipboard_content_exact_after_os_newline_normalization=True,http_404_rejected=True,hash_mismatch_rejected=True,
-                rapid_selection_tested=True,clipboard_denied_fallback=True,actual_canvas_generation_tested=False,actual_audio_listened=False)
+                rapid_selection_tested=len(expected)>1,clipboard_denied_fallback=True,actual_canvas_generation_tested=False,actual_audio_listened=False)
 
 if __name__=='__main__':
     a=argparse.ArgumentParser();a.add_argument('site',type=Path);a.add_argument('--browser-path');a.add_argument('--report',type=Path);o=a.parse_args()

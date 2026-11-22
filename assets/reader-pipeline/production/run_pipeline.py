@@ -17,7 +17,7 @@ def main():
   run('cache_guard.py');run('measure_new_clips.py');run('normalize_clips.py');run('whisper_force_align.py');run('publish_audiobook.py');run('build_landscape_test.py')
   import shutil
   shutil.copyfile(ROOT/'production/landscape-test/manifest.webmanifest',ROOT/'story-reader/landscape-test/manifest.webmanifest')
-  run('install_offline_v2.py');run('validate_audio_assets.py')
+  run('install_offline_v2.py');run('install_landscape_reader.py',str(ROOT/'story-reader'));run('validate_audio_assets.py')
   status='PASS'
  except Exception as error:status='FAIL';print(error,file=sys.stderr)
  (ROOT/'production/audiobook/pipeline-report.json').write_text(json.dumps({'status':status,'seconds':round(time.time()-start,2),'steps':steps},indent=2),encoding='utf8')

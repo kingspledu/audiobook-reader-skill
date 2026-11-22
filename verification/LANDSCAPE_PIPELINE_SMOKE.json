@@ -1,0 +1,115 @@
+{
+  "status": "PASS",
+  "fresh_unpacked_project": "[fresh temporary workspace]",
+  "initial_reader_html": "PASS",
+  "source_sentence_preservation": "PASS",
+  "fixture_chapters": [
+    1,
+    11,
+    21
+  ],
+  "fixture_segments": 5,
+  "real_whisper_executed": true,
+  "fixture_audio": "synthetic sine wave, no speech",
+  "claims_not_covered": [
+    "human-annotated speech timing accuracy",
+    "human listening",
+    "physical phone lock playback",
+    "full book processing"
+  ],
+  "offline_hashes": "PASS",
+  "steps": [
+    {
+      "stage": "build_reading_html.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "init",
+      "exit_code": 0
+    },
+    {
+      "stage": "add",
+      "exit_code": 0
+    },
+    {
+      "stage": "-c",
+      "exit_code": 0
+    },
+    {
+      "stage": "prepare_audiobook.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "measure_new_clips.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "bootstrap_speaker_levels.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "normalize_clips.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "whisper_force_align.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "publish_audiobook.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "install_offline_v2.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "build_landscape_test.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "validate_reader_audio.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "validate_audio_assets.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "prepare_audio_release.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "run_pipeline.py",
+      "exit_code": 0
+    },
+    {
+      "stage": "--check",
+      "exit_code": 0
+    },
+    {
+      "stage": "--check",
+      "exit_code": 0
+    },
+    {
+      "stage": "--check",
+      "exit_code": 0
+    },
+    {
+      "stage": "--check",
+      "exit_code": 0
+    },
+    {
+      "stage": "--check",
+      "exit_code": 0
+    },
+    {
+      "stage": "--check",
+      "exit_code": 0
+    },
+    {
+      "stage": "-c",
+      "exit_code": 0
+    }
+  ]
+}
