@@ -18,6 +18,8 @@ description: 원문에서 Gemini Canvas용 드라마 TTS HTML을 제작하고 �
 
 ## 제품 규격
 
+동일 문단 내 문장 연결은 [컷 편집 규칙과 재생기 차이](references/PARAGRAPH_JUMP_CUTS.md)를 따른다. 원음 MP3는 유지하고 브라우저 trim으로 연결하며 다른 문단의 쉼은 보존한다. `scripts/verify_paragraph_cuts.py`로 경계·실제 예약 코드를 검사한다.
+
 [책별 리소스·어휘·독서 위치·캐릭터 시트 입력](references/READER_RESOURCES.md)을 따른다. 기본 읽기 생성기는 슬라이드 어휘 카드·독서 진행선·문단 위치 이어 읽기를 포함하며 characters 입력이 있으면 시트 페이지와 권별 링크를 만든다. 새 책의 실제 콘텐츠는 따로 준비한다. 언어·권수 확장과 실기기 시험을 미실시 상태로 숨기지 않는다.
 
 Whisper 노래방식 재생은 [타이밍→단어→문장 연결 규약](references/WHISPER_KARAOKE.md)을 먼저 읽는다. 원음 단어 시간·trim·장 offset을 혼동하지 말고 실제 근거가 없는 타이밍은 null로 둔다. [공개 읽기 사이트 기능 대응표](references/READER_FEATURE_PARITY.md)의 포함·간소화·미포함 항목을 확인하고 전체 기능이 동일하다고 추정하지 않는다.

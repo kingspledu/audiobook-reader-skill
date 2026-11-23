@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "same_paragraph_silence_cut": true,
+  "different_paragraph_full_pause": true,
+  "legacy_multi_paragraph_clip_boundary": true,
+  "first_last_edges_preserved": true,
+  "actual_clip_scheduler": true,
+  "mp3_files_not_modified": true,
+  "physical_device_tested": false,
+  "actual_listening": false
+}

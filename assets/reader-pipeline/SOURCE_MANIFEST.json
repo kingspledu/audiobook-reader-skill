@@ -6,7 +6,7 @@
     "production/render_audiobook.py": "b1a023f456c69a9785392e4df552433ddbad7522104679e9d36f2aa6aa99906f",
     "production/normalize_clips.py": "89b3789980146456cc002102896a455824d957dba1cd58d3159b219e7b065ca3",
     "production/whisper_force_align.py": "0630675fe62a08c91d67455e557328fff9cff6f68ae48e13475821c1cda071fa",
-    "production/publish_audiobook.py": "6a4fc11ab66cb3d9bf0526e93924d032f7a04a962a1fbaede768ff525f87cc49",
+    "production/publish_audiobook.py": "05680046a6fa23725c8eba7114ea26e9e345efd53efcb19aaff93c11ff35134b",
     "production/install_offline_v2.py": "6b8a316697b3a867d4244ae25a15108d01c96626e35b94cdc85a437204d345be",
     "production/build_landscape_test.py": "fa487f97a5f7e78f2a4a9aa55f2611a7a39d25030f166f8bb0537020db7416f5",
     "production/add_test_fullscreen.py": "a88eb7040288cd4919dbf592eba44026baa490f66fe0e3fd1b5a95a5f1ef4a18",
@@ -28,7 +28,7 @@
     "production/landscape-test/test.js": "8e0bdfa3f3feb3dd9a644c00df855dc8d0d8110f227cf467a29a9357a0244130",
     "production/build_reading_html.py": "e77ab7d4aa73205468b4892c8c5c4b090c3e68af0d97b47c525b4d2ff4fb9f7d",
     "production/smoke_template.py": "7870cd62b1ae5002282a9ee1a7908c9bbb066c697a4563a8e6fecf28f951ffe8",
-    "production/reader-template/app.js": "b2eb7e8a51d52299547ee0210da0f7a7cfaef5ce6bc907b2b6218dc73da1f937",
+    "production/reader-template/app.js": "a2b8dbd7126c3aece065885db454a35631028ad12cc53f2aa7a2e811e314c6eb",
     "production/reader-template/book.sample.json": "29c80d06a44bd4e5897f700abaac5836ab2354f9654fdea39b239dce15d9f1a6",
     "production/reader-template/index.html": "c1d596c8e5f8e31716c5acb198e3236d18e60800845aba213bee167b5cd704c9",
     "production/reader-template/style.css": "07d33f48ad49697bf5576765aa0eec1f7796a493079ffcdc4d03fcd4ada4bda0",
@@ -46,7 +46,8 @@
     "production/landscape-reader.css": "b85a33968f3f963b5827c6a56d7dcc984cb2d7db687befcad9c7d58d42a89d7d",
     "production/install_landscape_reader.py": "1664df9ee67347a7f77d37dd11d4f56f9f8e4ec7efa6003d98da85c56a3fddac",
     "production/reader-template/pwa.js": "33e077bd5525328c7f5c6712fdea877d265b0965195421fe800aec299af56050",
-    "production/build_character_sheets.py": "4c78d40eabd299042fb9755b8e14affe16d1bd4e936debb81dc8ca6f71942f93"
+    "production/build_character_sheets.py": "4c78d40eabd299042fb9755b8e14affe16d1bd4e936debb81dc8ca6f71942f93",
+    "production/paragraph_cuts.py": "c5630cfaf5dc84a171e8faa69514c67f993e15dc3b5932e4e78316dca57e4b76"
   },
   "dependencies": {
     "beautifulsoup4": "4.15.0",

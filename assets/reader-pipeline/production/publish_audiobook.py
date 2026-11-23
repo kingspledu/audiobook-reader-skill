@@ -1,6 +1,7 @@
 from pathlib import Path
 from bs4 import BeautifulSoup
 import json,shutil,re
+from paragraph_cuts import plan
 ROOT=Path(__file__).resolve().parents[1];SITE=ROOT/'story-reader';WORK=ROOT/'production/audiobook'
 catalogs={v:[] for v in (1,2,3)};report=[]
 levels=json.loads((WORK/'clip-levels.json').read_text('utf8'))
@@ -14,10 +15,7 @@ for p in sorted(WORK.glob('ch??.json')):
  paragraph=lambda s:s['word_map'][0][0].split('-s')[0] if s['word_map'] else None
  for i,s in enumerate(data['segments']):
   a=aligned[s['filename']];assert a['sha256']==s['sha256'];words=[];level=levels[s['filename']]
-  same_before=i>0 and paragraph(s) is not None and paragraph(s)==paragraph(data['segments'][i-1])
-  same_after=i+1<len(data['segments']) and paragraph(s) is not None and paragraph(s)==paragraph(data['segments'][i+1])
-  trim=level['trim_start']/24000 if same_before else 0
-  end=min(a['duration'],level['trim_end']/24000) if same_after else a['duration'];duration=end-trim
+  trim,end=plan(data['segments'],i,level,a['duration']);duration=end-trim
   for ref,t in zip(s['word_map'],a['word_times']):
    assert ref is not None
    words.append({'sentence':ref[0],'word':ref[1],'start':t[0] if t else None,'end':t[1] if t else None})
